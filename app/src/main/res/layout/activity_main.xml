@@ -2,12 +2,13 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="276dp"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme">
 
@@ -17,13 +18,14 @@
             android:layout_height="match_parent"
             android:elevation="8dp"
             android:fitsSystemWindows="true"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:statusBarScrim="@android:color/transparent">
 
             <ImageView
                 android:id="@+id/toolbar_imageview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/capitol1"
                 app:layout_collapseMode="parallax" />
@@ -32,20 +34,22 @@
                 android:id="@+id/scrim_gradient"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/scrim_gradient" />
+                android:background="@drawable/scrim_gradient"
+                android:fitsSystemWindows="true" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?android:actionBarSize"
                 android:layout_gravity="bottom|start"
+                android:layout_marginBottom="112dp"
                 android:background="@color/colorPrimaryDark"
                 android:fitsSystemWindows="true"
                 android:gravity="bottom|start"
                 android:minHeight="?android:actionBarSize"
+                android:theme="@style/OverflowTheme"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/OverflowTheme"
-                android:theme="@style/OverflowTheme"/>
+                app:popupTheme="@style/OverflowTheme" />
 
             <TextView
                 android:id="@+id/toolbar_title_textview"
@@ -53,84 +57,105 @@
                 android:layout_height="?android:actionBarSize"
                 android:layout_gravity="bottom|start"
                 android:layout_marginStart="72dp"
+                android:layout_marginBottom="112dp"
                 android:background="@android:color/transparent"
+                android:fitsSystemWindows="true"
                 android:gravity="center_vertical"
                 android:text="@string/toolbar_title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:textColor="@android:color/white"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                app:layout_collapseMode="pin" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/top_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="?android:actionBarSize"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="?android:actionBarSize"
+                android:background="@color/colorPrimary"
+                app:layout_collapseMode="parallax"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:tabPaddingEnd="0dp"
+                app:tabPaddingStart="0dp">
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout="@layout/tab_item_layout"
+                    android:minWidth="120dp" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout="@layout/tab_item_layout"
+                    android:minWidth="120dp" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout="@layout/tab_item_layout"
+                    android:minWidth="120dp" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout="@layout/tab_item_layout"
+                    android:minWidth="120dp" />
+            </android.support.design.widget.TabLayout>
+
+            <include
+                android:id="@+id/included_three_tab_layout"
+                layout="@layout/three_tab_layout" />
+
+            <include
+                android:id="@+id/included_two_tab_layout"
+                layout="@layout/two_tab_layout"
+                android:visibility="gone" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/content_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:background="@color/colorPrimaryDark"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:background="@android:color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <LinearLayout
-        android:id="@+id/content_layout"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/alt_search_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:fillViewport="true"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/top_tab_layout"
+        <include
+            android:id="@+id/alt_search_included_layout"
+            layout="@layout/subject_entry_layout"
             android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize"
-            android:background="@color/colorPrimary"
-            app:tabPaddingStart="0dp"
-            app:tabPaddingEnd="0dp">
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:minWidth="120dp"
-                android:layout="@layout/tab_item_layout" />
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:minWidth="120dp"
-                android:layout="@layout/tab_item_layout" />
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout="@layout/tab_item_layout"
-                android:minWidth="120dp" />
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout="@layout/tab_item_layout"
-                android:minWidth="120dp" />
-        </android.support.design.widget.TabLayout>
-        <android.support.design.widget.TabLayout
-            android:id="@+id/bottom_tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize"
-            android:background="@color/colorPrimary"
-            app:tabPaddingStart="0dp"
-            app:tabPaddingEnd="0dp">
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout="@layout/tab_item_layout"
-                android:minWidth="120dp"
-                android:text="Top Rated"/>
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout="@layout/tab_item_layout"
-                android:minWidth="120dp"
-                android:text="New"/>
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout="@layout/tab_item_layout"
-                android:minWidth="120dp"
-                android:text="Voted On"/>
-        </android.support.design.widget.TabLayout>
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_margin="16dp" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/refreshing_bills_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="128dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:visibility="gone" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:background="@color/raised_button_darker_red"
+        android:src="@drawable/ic_add_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/recent_legislation_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="128dp"
+    android:layout_gravity="center"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="4dp"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="true">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/recent_legislation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark">
+
+        <LinearLayout
+            android:id="@+id/recent_bill_detail_inner_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="2dp"
+            android:background="@color/book_page_color"
+            android:orientation="vertical"
+            card_view:layout_constraintBottom_toTopOf="@id/recent_bill_date_text_view"
+            card_view:layout_constraintLeft_toLeftOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintVertical_chainStyle="spread"
+            card_view:layout_constraintVertical_weight="4">
+
+            <TextView
+                android:id="@+id/recent_bill_slug_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:gravity="start"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:id="@+id/recent_bill_subjects"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:gravity="start"
+                android:layout_marginBottom="4dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"/>
+
+            <TextView
+                android:id="@+id/recent_bill_title_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:maxLines="2"
+                android:padding="4dp"
+                android:text="This is a test bill.  Let's see how the wrap around to a max of two lines, with ellipsize marguee, works."
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/recent_bill_date_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="2018-10-08"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:textColor="@android:color/white"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintHorizontal_chainStyle="spread"
+            card_view:layout_constraintHorizontal_weight="1"
+            card_view:layout_constraintLeft_toLeftOf="parent"
+            card_view:layout_constraintRight_toLeftOf="@id/recent_bill_party_text_view"
+            card_view:layout_constraintTop_toBottomOf="@id/recent_bill_detail_inner_layout"
+            card_view:layout_constraintVertical_chainStyle="spread"
+            card_view:layout_constraintVertical_weight="1" />
+
+        <TextView
+            android:id="@+id/recent_bill_party_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="Sponsored by: Republicans"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:textColor="@android:color/white"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintHorizontal_chainStyle="spread"
+            card_view:layout_constraintHorizontal_weight="2"
+            card_view:layout_constraintLeft_toRightOf="@id/recent_bill_date_text_view"
+            card_view:layout_constraintRight_toRightOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@id/recent_bill_detail_inner_layout"
+            card_view:layout_constraintVertical_chainStyle="spread"
+            card_view:layout_constraintVertical_weight="1" />
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

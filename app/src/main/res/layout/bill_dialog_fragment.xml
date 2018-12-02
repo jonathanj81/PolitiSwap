@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bill_fragment_background_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp"
+    android:layout_margin="8dp"
+    android:background="@color/colorPrimaryDark">
+
+    <ScrollView
+        android:id="@+id/bill_dialog_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/book_page_color"
+        android:padding="4dp">
+
+        <LinearLayout
+            android:id="@+id/bill_dialog_inner_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/bill_dialog_slug_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"/>
+            <TextView
+                android:id="@+id/bill_dialog_sponsor_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"/>
+            <TextView
+                android:id="@+id/bill_dialog_date_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"/>
+            <TextView
+                android:id="@+id/bill_dialog_subjects_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:layout_marginBottom="4dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"/>
+            <TextView
+                android:id="@+id/bill_dialog_link_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:autoLink="web"
+                android:layout_marginBottom="20dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"/>
+            <TextView
+                android:id="@+id/bill_dialog_title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                android:layout_marginBottom="8dp"
+                android:gravity="start"/>
+            <TextView
+                android:id="@+id/bill_dialog_summary_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/bill_dialog_close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/circle_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/ic_close_black_24dp" />
+
+</android.support.constraint.ConstraintLayout>

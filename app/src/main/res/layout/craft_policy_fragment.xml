@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/craft_policy_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/craft_policy_header_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/craft_policy_header"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+        app:layout_constraintVertical_weight="2"
+        app:layout_constraintBottom_toTopOf="@id/included_layouts_frame"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/included_layouts_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintVertical_weight="5"
+        app:layout_constraintTop_toBottomOf="@id/craft_policy_header_text_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/craft_policy_small_back">
+
+        <include
+            android:id="@+id/title_entry_included_layout"
+            layout="@layout/title_entry_layout"
+            android:visibility="gone" />
+        <include
+            android:id="@+id/summary_entry_included_layout"
+            layout="@layout/summary_entry_layout"
+            android:visibility="gone" />
+        <include
+            android:id="@+id/policy_preview_included_layout"
+            layout="@layout/policy_preview_layout_screen"
+            android:visibility="gone" />
+        <include
+            android:id="@+id/subject_entry_included_layout"
+            layout="@layout/subject_entry_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/craft_policy_small_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/craft_policy_small_back"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/included_layouts_frame"/>
+
+    <Button
+        android:id="@+id/craft_policy_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/craft_policy_next"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/craft_policy_small_back"/>
+
+    <ImageButton
+        android:id="@+id/craft_policy_dialog_close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/circle_background"
+        android:contentDescription="@string/craft_policy_close_confirm"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/ic_close_black_24dp" />
+
+</android.support.constraint.ConstraintLayout>

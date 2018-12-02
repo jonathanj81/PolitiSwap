@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "336539012458",
+    "firebase_url": "https://politiswap.firebaseio.com",
+    "project_id": "politiswap",
+    "storage_bucket": "politiswap.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336539012458:android:65a93bf01b54195a",
+        "android_client_info": {
+          "package_name": "com.example.jon.politiswap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336539012458-81i8lue6pccnl633nfl6eo1iurh1pcku.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jon.politiswap",
+            "certificate_hash": "33e003866f4106768843e202bda018b35159889a"
+          }
+        },
+        {
+          "client_id": "336539012458-uajj6s23jvjq2s2tegjhdmplus7igl9k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMpTqzbPwe-pg4DnldIseY7ftTUeiAU0c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336539012458-uajj6s23jvjq2s2tegjhdmplus7igl9k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
