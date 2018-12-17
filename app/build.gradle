@@ -52,4 +52,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
     implementation 'com.google.firebase:firebase-auth:16.0.5'
+    implementation 'org.apache.commons:commons-lang3:3.6'
 }

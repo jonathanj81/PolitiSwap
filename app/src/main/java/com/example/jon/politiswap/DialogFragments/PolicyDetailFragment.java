@@ -84,9 +84,12 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
         mNoButton = mRootView.findViewById(R.id.policy_detail_cannot_vote_button);
         mNoButton.setOnClickListener(this);
 
-        if (!MainActivity.PARTY.equals(party)){
+        if (MainActivity.IS_GUEST){
+            prohibitButtons(2);
+        } else if (!MainActivity.PARTY.equals(party)) {
             prohibitButtons(0);
-        } else {
+        }
+        else {
             alreadyVoted();
         }
 
@@ -105,6 +108,11 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
 
     @Override
     public void onResume() {
+        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         super.onResume();
     }
 
@@ -115,10 +123,10 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                 dismiss();
                 break;
             case R.id.policy_detail_vote_yes_button:
-                incrementVote(1);
+                incrementVote(1, "up");
                 break;
             case R.id.policy_detail_vote_no_button:
-                incrementVote(-1);
+                incrementVote(-1, "down");
                 break;
             case R.id.policy_detail_cannot_vote_button:
                 confirmSwitch();
@@ -134,7 +142,7 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
+                if (dataSnapshot.exists() && dataSnapshot.getValue(String.class).length() > 0){
                     prohibitButtons(1);
                 }
             }
@@ -145,7 +153,7 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
         });
     }
 
-    private void incrementVote(final int increment){
+    private void incrementVote(final int increment, final String type){
         FirebaseDatabase.getInstance().getReference("Policies").child(FragmentArgs.POLICY_LONG_ID)
                 .child("netWanted").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -153,7 +161,11 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                 int value = dataSnapshot.getValue(Integer.class) + increment;
                 dataSnapshot.getRef().setValue(value);
                 String message;
-                if (increment > 0){
+                if (type.equals("neutral")){
+                    message = getResources().getString(R.string.policy_neutral_vote_partial);
+                    FirebaseDatabase.getInstance().getReference("UserPolicies").child(MainActivity.USER_ID)
+                            .child("VotedOn").child(FragmentArgs.POLICY_LONG_ID).setValue("");
+                }else if (type.equals("up")){
                     message = getResources().getString(R.string.policy_yes_vote_partial);
                     FirebaseDatabase.getInstance().getReference("UserPolicies").child(MainActivity.USER_ID)
                             .child("VotedOn").child(FragmentArgs.POLICY_LONG_ID).setValue("yes");
@@ -169,7 +181,14 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                 ((TextView)mRootView.findViewById(R.id.swap_first_thumbs_up_count))
                         .setText(String.format(getResources().getString(R.string.policy_net_wanted),
                                 FragmentArgs.POLICY_DETAIL_NET_WANTED, FragmentArgs.POLICY_DETAIL_PARTY));
-                new FirebaseRetrievalCalls((MainActivity)getActivity()).getNewPolices();
+                if (!MainActivity.mUserVoted.contains(FragmentArgs.POLICY_LONG_ID)){
+                    MainActivity.mUserVoted.add(FragmentArgs.POLICY_LONG_ID);
+                }
+                if (MainActivity.mAdapterNeeded == 3){
+                    new FirebaseRetrievalCalls((MainActivity)getActivity()).getTopPolicies();
+                } else {
+                    new FirebaseRetrievalCalls((MainActivity) getActivity()).getNewPolices();
+                }
             }
 
             @Override
@@ -180,15 +199,15 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
     }
 
     private void prohibitButtons(int type){
+        mRootView.findViewById(R.id.policy_detail_can_vote_frame).setVisibility(View.GONE);
+        mNoButton.setVisibility(View.VISIBLE);
         if (type == 0){
-            mRootView.findViewById(R.id.policy_detail_can_vote_frame).setVisibility(View.GONE);
-            mNoButton.setVisibility(View.VISIBLE);
             mNoButton.setText(getResources().getString(R.string.policy_detail_other_party_button));
             mNoButton.setClickable(false);
-        } else {
-            mRootView.findViewById(R.id.policy_detail_can_vote_frame).setVisibility(View.GONE);
-            mNoButton.setVisibility(View.VISIBLE);
+        } else if (type == 1){
             mNoButton.setText(getResources().getString(R.string.policy_detail_already_voted_button));
+        } else if (type == 2){
+            mNoButton.setText(getResources().getString(R.string.policy_detail_guest_button));
         }
     }
 
@@ -203,12 +222,15 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                 String previousVote = dataSnapshot.getValue(String.class);
                 String message;
                 final int increment;
+                final int neutralIncrement;
                 if (previousVote.equals("yes")){
                     message = getResources().getString(R.string.policy_yes_vote_partial);
                     increment = -2;
+                    neutralIncrement = -1;
                 } else {
                     message = getResources().getString(R.string.policy_no_vote_partial);
                     increment = 2;
+                    neutralIncrement = 1;
                 }
                 alertDialog.setMessage(String.format(getResources().getString(R.string.change_policy_vote_message),
                         message));
@@ -216,7 +238,7 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                incrementVote(increment);
+                                incrementVote(increment, increment > 0 ? "up" : "down");
                             }
                         });
                 alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.change_policy_vote_no),
@@ -226,6 +248,14 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                                 dialogInterface.dismiss();
                                 Toast.makeText(getActivity(),getResources().getString(R.string.change_policy_vote_no_response),
                                         Toast.LENGTH_LONG).show();
+                            }
+                        });
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getResources().getString(R.string.change_policy_vote_remove),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                dialog.dismiss();
+                                incrementVote(neutralIncrement, "neutral");
                             }
                         });
                 alertDialog.show();

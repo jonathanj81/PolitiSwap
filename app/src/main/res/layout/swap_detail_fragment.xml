@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/policy_detail_root_layout"
+    android:id="@+id/swap_detail_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
     android:background="@color/lighter_gray">
 
     <LinearLayout
-        android:id="@+id/policy_detail_background_layout"
+        android:id="@+id/swap_detail_background_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toBottomOf="@id/policy_detail_close_button">
 
         <FrameLayout
-            android:id="@+id/policy_detail_included_container"
+            android:id="@+id/swap_detail_included_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -31,20 +31,20 @@
             android:elevation="4dp">
 
             <include
-                android:id="@+id/policy_detail_included_layout"
-                layout="@layout/swap_inner_layout" />
+                android:id="@+id/swap_detail_included_layout"
+                layout="@layout/swap_layout_card_view" />
 
         </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/policy_detail_can_vote_frame"
+            android:id="@+id/swap_detail_can_vote_frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/policy_detail_vote_yes_button"
+                android:id="@+id/swap_detail_vote_yes_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_yes_background"
@@ -60,7 +60,7 @@
                 android:textColor="@android:color/white"/>
 
             <Button
-                android:id="@+id/policy_detail_vote_no_button"
+                android:id="@+id/swap_detail_vote_no_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_no_background"
@@ -77,7 +77,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/policy_detail_cannot_vote_button"
+            android:id="@+id/swap_detail_cannot_vote_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -90,7 +90,7 @@
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/policy_detail_close_button"
+        android:id="@+id/swap_detail_close_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"

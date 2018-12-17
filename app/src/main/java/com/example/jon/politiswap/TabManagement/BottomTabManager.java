@@ -1,10 +1,13 @@
 package com.example.jon.politiswap.TabManagement;
 
+import android.content.Context;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -16,17 +19,12 @@ import com.example.jon.politiswap.R;
 import com.example.jon.politiswap.UiAdapters.CreateSubjectAvailableAdapter;
 import com.example.jon.politiswap.UiAdapters.SwapsAdapter;
 
-public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectChangeManager, TabListeners.FirebaseReturns {
+public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectChangeManager {
 
     private MainActivity mActivity;
 
     private RecyclerView mSubjectAvailableRecycler;
     private CreateSubjectAvailableAdapter mSubjectAvailableAdapter;
-
-    private Button mGoButton;
-    private Button mCancelButton;
-    private FrameLayout mPlaceholderContainer;
-    private TextView mTitleTextView;
 
     private RecyclerView mMainContentRecyclerView;
     private ContentLoadingProgressBar mProgressBar;
@@ -39,9 +37,10 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
     BottomTabManager(MainActivity activity) {
         mActivity = activity;
         mMainContentRecyclerView = mActivity.getRecyclerView();
+        mProgressBar = mActivity.findViewById(R.id.refreshing_bills_progress_bar);
         mThreeTabs = mActivity.findViewById(R.id.included_three_tab_layout);
         mTwoTabs = mActivity.findViewById(R.id.included_two_tab_layout);
-        mTabListeners = new TabListeners(mActivity,this);
+        mTabListeners = new TabListeners(mActivity);
     }
 
     void setBottomForSwaps() {
@@ -50,10 +49,8 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
                 mActivity.getResources().getString(R.string.bottom_swaps_new),
                 mActivity.getResources().getString(R.string.bottom_swaps_search));
 
-        mThreeTabs.removeOnTabSelectedListener(mTabSelectedListener);
         mTabSelectedListener = mTabListeners.getSwapsTabListener();
         mThreeTabs.addOnTabSelectedListener(mTabSelectedListener);
-        mMainContentRecyclerView.setAdapter(new SwapsAdapter());
     }
 
     void setBottomForPolicies() {
@@ -62,7 +59,6 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
                 mActivity.getResources().getString(R.string.bottom_policies_new),
                 mActivity.getResources().getString(R.string.bottom_policies_search));
 
-        mThreeTabs.removeOnTabSelectedListener(mTabSelectedListener);
         mTabSelectedListener = mTabListeners.getPolicyTabListener();
         mThreeTabs.addOnTabSelectedListener(mTabSelectedListener);
     }
@@ -73,7 +69,6 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
                 mActivity.getResources().getString(R.string.bottom_activity_policies),
                 mActivity.getResources().getString(R.string.bottom_activity_score));
 
-        mThreeTabs.removeOnTabSelectedListener(mTabSelectedListener);
         mTabSelectedListener = mTabListeners.getActivityTabListener();
         mThreeTabs.addOnTabSelectedListener(mTabSelectedListener);
     }
@@ -83,26 +78,23 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
         setBottomTabStrings(mActivity.getResources().getString(R.string.bottom_legislation_recent),
                 mActivity.getResources().getString(R.string.bottom_legislation_search));
 
-        mTwoTabs.removeOnTabSelectedListener(mTabSelectedListener);
         mTabSelectedListener = mTabListeners.getLegislationTabListener();
         mTwoTabs.addOnTabSelectedListener(mTabSelectedListener);
-
-        new BillResultsAsync(mActivity, mActivity.getBillOffset() * 20).execute();
     }
 
-    @Override
     public void getSearchScreen() {
         mMainContentRecyclerView.setVisibility(View.GONE);
         mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.VISIBLE);
         mActivity.findViewById(R.id.craft_policy_step_number_1).setVisibility(View.GONE);
         mActivity.findViewById(R.id.craft_subject_recycler_and_placeholder_frame).setVisibility(View.GONE);
+        mActivity.findViewById(R.id.alt_search_cancel_button).setVisibility(View.GONE);
         TextView titleView = mActivity.findViewById(R.id.craft_subject_title_text_view);
         titleView.setText(mActivity.getResources().getString(R.string.search_alt_subject_hint));
 
         mSubjectAvailableRecycler = mActivity.findViewById(R.id.alt_search_included_layout)
                 .findViewById(R.id.craft_subject_available_recycler);
         mSubjectAvailableRecycler.setVisibility(View.VISIBLE);
-        mSubjectAvailableAdapter = new CreateSubjectAvailableAdapter(this, 0);
+        mSubjectAvailableAdapter = new CreateSubjectAvailableAdapter(this, 2);
         mSubjectAvailableAdapter.setAll();
         mSubjectAvailableRecycler.setHasFixedSize(true);
         mSubjectAvailableRecycler.setLayoutManager(new LinearLayoutManager(mActivity,
@@ -112,42 +104,14 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
 
     @Override
     public void addSubject(final String subject) {
-        mSubjectAvailableRecycler.setVisibility(View.GONE);
+        mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
+        mProgressBar.show();
 
-        mTitleTextView = mActivity.findViewById(R.id.craft_subject_title_text_view);
-        mTitleTextView.setVisibility(View.GONE);
-
-        mCancelButton = mActivity.findViewById(R.id.alt_search_cancel_button);
-        mGoButton = mActivity.findViewById(R.id.alt_search_go_button);
-        mCancelButton.setVisibility(View.VISIBLE);
-        mCancelButton.setText(mActivity.getResources().getString(R.string.craft_policy_close_cancel));
-        mGoButton.setVisibility(View.VISIBLE);
-        mGoButton.setText(String.format(mActivity.getResources().getString(R.string.search_alt_go_button), subject));
-
-        final FirebaseRetrievalCalls caller = new FirebaseRetrievalCalls(mActivity);
-        mGoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
-                mProgressBar = mActivity.findViewById(R.id.refreshing_bills_progress_bar);
-                mProgressBar.show();
-                mTitleTextView.setVisibility(View.GONE);
-                mGoButton.setVisibility(View.GONE);
-                mCancelButton.setVisibility(View.GONE);
-                caller.getPolicyAreaSearch(subject);
-            }
-        });
-
-        mCancelButton.setVisibility(View.VISIBLE);
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mGoButton.setVisibility(View.GONE);
-                mCancelButton.setVisibility(View.GONE);
-                mSubjectAvailableRecycler.setVisibility(View.VISIBLE);
-                mTitleTextView.setVisibility(View.VISIBLE);
-            }
-        });
+        if (MainActivity.mAdapterNeeded == 2){
+            new FirebaseRetrievalCalls(mActivity).getSwapAreaSearch(subject);
+        } else {
+            new FirebaseRetrievalCalls(mActivity).getPolicyAreaSearch(subject);
+        }
     }
 
     @Override
@@ -155,8 +119,15 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
     }
 
     private void resetTabs(){
+        mTwoTabs.clearOnTabSelectedListeners();
+        mThreeTabs.clearOnTabSelectedListeners();
         mMainContentRecyclerView.setVisibility(View.VISIBLE);
         mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
+        if (MainActivity.mAdapterNeeded == 10) {
+            mActivity.findViewById(R.id.alt_search_legislation_layout).setVisibility(View.GONE);
+            ((InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(mActivity.getRecyclerView().getWindowToken(), 0);
+        }
         mThreeTabs.getTabAt(0).select();
         mThreeTabs.getTabAt(0).getCustomView().findViewById(R.id.tab_item_text_view)
                 .setBackground(mActivity.getResources().getDrawable(R.drawable.tab_item_background_selected));

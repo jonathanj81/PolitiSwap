@@ -362,7 +362,8 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         mDatabaseReference = mFirebaseDatabase.getReference("Subjects");
         for (String subject : mSubjects){
             subject = subject.replace("/","");
-            mDatabaseReference.child(subject).push().setValue(pushId);
+            mDatabaseReference.child(subject).child("byPolicy").push().setValue(pushId);
         }
+        MainActivity.mUserCreated.add(pushId);
     }
 }

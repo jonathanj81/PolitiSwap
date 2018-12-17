@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jon.politiswap.DataUtils.Policy;
@@ -29,10 +31,16 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
 
     private List<Policy> mPolicies = new ArrayList<>();
     private Context mContext;
+    private int mModifier = 0;
+    private int mType = 0;
 
     private static final String POLICY_FRAGMENT_NAME = "policy_frag";
 
     public PolicyAdapter(){
+    }
+
+    public PolicyAdapter(int type){
+        mType = type;
     }
 
     @NonNull
@@ -46,58 +54,83 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
 
     @Override
     public void onBindViewHolder(@NonNull final PolicyViewHolder holder, int i) {
-        final Policy policy = mPolicies.get(i);
-        String subjects = policy.getSubjects().toString();
-        final String party = policy.getParty();
-        final int wanted = policy.getNetWanted();
-        holder.mCreatorView.setText(policy.getCreator());
-        holder.mTitleView.setText(policy.getTitle());
-        holder.mCountView.setText(String.format(mContext.getResources().getString(R.string.policy_net_wanted),
-                wanted, party));
-        holder.mSubjectView.setText(subjects.substring(1,subjects.length()-1));
-        holder.mSummaryView.setText(policy.getSummary());
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(Long.valueOf(policy.getTimeStamp()));
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        holder.mDateView.setText(String.valueOf(month+1) + "/" + String.valueOf(day) + "/" + String.valueOf(year));
-
-        if (party.equals("Democrat")){
-            holder.mContainer.setBackground(mContext.getResources().getDrawable(R.drawable.dem_swap_background));
+        if (i == 0 && MainActivity.mAdapterNeeded == 5){
+            mModifier = 1;
+            holder.mContainer.setVisibility(View.GONE);
+            holder.mRefreshButton.setVisibility(View.VISIBLE);
+            holder.mRefreshButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MainActivity.mTopTabManager.getBottomTabManager().getSearchScreen();
+                }
+            });
         } else {
-            holder.mContainer.setBackground(mContext.getResources().getDrawable(R.drawable.rep_swap_background));
-        }
+            final Policy policy = mPolicies.get(i-mModifier);
+            String subjects = policy.getSubjects().toString();
+            final String party = policy.getParty();
+            final int wanted = policy.getNetWanted();
+            holder.mCreatorView.setText(policy.getCreator());
+            holder.mTitleView.setText(policy.getTitle());
+            holder.mCountView.setText(String.format(mContext.getResources().getString(R.string.policy_net_wanted),
+                    wanted, party));
+            holder.mSubjectView.setText(subjects.substring(1, subjects.length() - 1));
+            holder.mSummaryView.setText(policy.getSummary());
 
-        holder.mContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.valueOf(policy.getTimeStamp()));
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            holder.mDateView.setText(String.valueOf(month + 1) + "/" + String.valueOf(day) + "/" + String.valueOf(year));
 
-                FragmentArgs.POLICY_DETAIL_NET_WANTED = wanted;
-                FragmentArgs.POLICY_DETAIL_CREATOR = holder.mCreatorView.getText().toString();
-                FragmentArgs.POLICY_DETAIL_DATE = holder.mDateView.getText().toString();
-                FragmentArgs.POLICY_DETAIL_PARTY = party;
-                FragmentArgs.POLICY_DETAIL_TITLE = holder.mTitleView.getText().toString();
-                FragmentArgs.POLICY_DETAIL_SUBJECTS = holder.mSubjectView.getText().toString();
-                FragmentArgs.POLICY_DETAIL_SUMMARY = holder.mSummaryView.getText().toString();
-                FragmentArgs.POLICY_LONG_ID = policy.getLongID();
-
-                FragmentManager fm = ((MainActivity)v.getContext()).getSupportFragmentManager();
-                PolicyDetailFragment frag = PolicyDetailFragment.newInstance(null);
-                frag.show(fm, POLICY_FRAGMENT_NAME);
+            if (party.equals("Democrat")) {
+                holder.mContainer.setBackground(mContext.getResources().getDrawable(R.drawable.dem_swap_background));
+            } else {
+                holder.mContainer.setBackground(mContext.getResources().getDrawable(R.drawable.rep_swap_background));
             }
-        });
+
+            if (MainActivity.mUserCreated.contains(policy.getLongID())) {
+                holder.mCreatedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_document_svg_black));
+            }
+            if (MainActivity.mUserVoted.contains(policy.getLongID())) {
+                holder.mVotedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_check_box_black));
+            }
+
+            holder.mContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (mType == 1){
+                        MainActivity.mSwapFrag.refreshPolicyViews(policy);
+                    } else {
+                        FragmentArgs.POLICY_DETAIL_NET_WANTED = wanted;
+                        FragmentArgs.POLICY_DETAIL_CREATOR = holder.mCreatorView.getText().toString();
+                        FragmentArgs.POLICY_DETAIL_DATE = holder.mDateView.getText().toString();
+                        FragmentArgs.POLICY_DETAIL_PARTY = party;
+                        FragmentArgs.POLICY_DETAIL_TITLE = holder.mTitleView.getText().toString();
+                        FragmentArgs.POLICY_DETAIL_SUBJECTS = holder.mSubjectView.getText().toString();
+                        FragmentArgs.POLICY_DETAIL_SUMMARY = holder.mSummaryView.getText().toString();
+                        FragmentArgs.POLICY_LONG_ID = policy.getLongID();
+
+                        FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();
+                        PolicyDetailFragment frag = PolicyDetailFragment.newInstance(null);
+                        frag.show(fm, POLICY_FRAGMENT_NAME);
+                    }
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
         if (null == mPolicies) return 0;
+        if (MainActivity.mAdapterNeeded == 5) return (mPolicies.size() + 1);
         return mPolicies.size();
     }
 
     public void setPolicies(List<Policy> policies) {
         mPolicies = policies;
+        mModifier = 0;
         notifyDataSetChanged();
     }
 
@@ -110,6 +143,9 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
         final TextView mCountView;
         final TextView mDateView;
         final FrameLayout mContainer;
+        final ImageView mCreatedIcon;
+        final ImageView mVotedIcon;
+        final ImageButton mRefreshButton;
 
         public PolicyViewHolder(@NonNull View view) {
             super(view);
@@ -120,6 +156,9 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
             mCountView = view.findViewById(R.id.swap_first_thumbs_up_count);
             mContainer = view.findViewById(R.id.swap_first_included_container);
             mDateView = view.findViewById(R.id.swap_first_date);
+            mCreatedIcon = view.findViewById(R.id.swap_first_created_icon);
+            mVotedIcon = view.findViewById(R.id.swap_first_voted_icon);
+            mRefreshButton = view.findViewById(R.id.policy_layout_refresh_button);
         }
     }
 }

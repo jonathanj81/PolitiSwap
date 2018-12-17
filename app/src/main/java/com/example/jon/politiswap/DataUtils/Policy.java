@@ -1,5 +1,7 @@
 package com.example.jon.politiswap.DataUtils;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.List;
 
 public class Policy {
@@ -75,5 +77,24 @@ public class Policy {
     }
     public void setLongID(String longID) {
         this.longID = longID;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Policy))
+            return false;
+        if (obj == this)
+            return true;
+        return this.getLongID().equals(((Policy) obj).getLongID());
+    }
+
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(19,29)
+                .append(longID)
+                .toHashCode();
     }
 }

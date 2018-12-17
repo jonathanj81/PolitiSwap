@@ -1,11 +1,13 @@
 
 package com.example.jon.politiswap.DataUtils.Searched;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Bill {
+public class Bill implements Comparable<Bill> {
 
     @SerializedName("bill_id")
     @Expose
@@ -327,4 +329,8 @@ public class Bill {
         this.latestMajorAction = latestMajorAction;
     }
 
+    @Override
+    public int compareTo(@NonNull Bill bill) {
+        return getIntroducedDate().compareTo(bill.getIntroducedDate());
+    }
 }

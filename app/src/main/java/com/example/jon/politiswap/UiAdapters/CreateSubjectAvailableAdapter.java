@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,13 +59,15 @@ public class CreateSubjectAvailableAdapter extends RecyclerView.Adapter<CreateSu
     public void onBindViewHolder(@NonNull SubjectAvailableViewHolder holder, int i) {
         final String subject = mMasterSubjects.get(i);
         holder.mSubjectView.setText(subject);
+        final String dbSubject = subject.replace("/","");
 
-        if (mType == 0){
+        if (mType%2 == 0){
             holder.mRemoveButton.setVisibility(View.GONE);
             holder.mLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mChangeManager.addSubject(subject);
+                    String toUse = mType==2 ? dbSubject : subject;
+                    mChangeManager.addSubject(toUse);
                 }
             });
         } else{

@@ -4,6 +4,7 @@
     android:id="@+id/craft_policy_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lighter_gray"
     android:layout_margin="8dp"
     android:padding="4dp">
 

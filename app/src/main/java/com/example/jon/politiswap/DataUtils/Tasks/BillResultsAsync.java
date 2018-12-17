@@ -4,11 +4,15 @@ import android.os.AsyncTask;
 
 import com.example.jon.politiswap.DataUtils.Recent.RecentBills;
 import com.example.jon.politiswap.DataUtils.RetrofitClasses.RetrofitLegislationFetcher;
+import com.example.jon.politiswap.MainActivity;
+
+import java.util.UUID;
 
 public class BillResultsAsync extends AsyncTask<Void, Void, RecentBills> {
 
     private int mOffset;
     private BillHandler mHandler;
+    private String queueIdentifier;
 
     public interface BillHandler {
         void recentBillsCallback(RecentBills results);
@@ -20,12 +24,21 @@ public class BillResultsAsync extends AsyncTask<Void, Void, RecentBills> {
     }
 
     @Override
+    protected void onPreExecute() {
+        queueIdentifier = UUID.randomUUID().toString();
+        MainActivity.mTaskWithPriority = queueIdentifier;
+        super.onPreExecute();
+    }
+
+    @Override
     protected RecentBills doInBackground(Void... voids) {
         return RetrofitLegislationFetcher.getRecentBills(mOffset);
     }
 
     @Override
     protected void onPostExecute(RecentBills results) {
-        mHandler.recentBillsCallback(results);
+        if (queueIdentifier.equals(MainActivity.mTaskWithPriority)) {
+            mHandler.recentBillsCallback(results);
+        }
     }
 }

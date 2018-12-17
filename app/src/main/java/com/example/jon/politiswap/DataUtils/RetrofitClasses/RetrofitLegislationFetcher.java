@@ -28,7 +28,7 @@ public class RetrofitLegislationFetcher {
 
         LegislationClient client = retrofit.create(LegislationClient.class);
 
-        Call<SearchedBills> call = client.getSearchedResultsFromJson(query);
+        Call<SearchedBills> call = client.getSearchedResultsFromJson(query, "date");
 
         try {
             return call.execute().body();

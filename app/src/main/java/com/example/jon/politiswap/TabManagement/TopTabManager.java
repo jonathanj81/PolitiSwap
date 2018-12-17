@@ -2,7 +2,9 @@ package com.example.jon.politiswap.TabManagement;
 
 import android.app.Activity;
 import android.support.design.widget.TabLayout;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.jon.politiswap.DataUtils.Tasks.BillResultsAsync;
@@ -31,10 +33,13 @@ public class TopTabManager implements TabLayout.OnTabSelectedListener {
         ((TextView) topTab.getTabAt(3).getCustomView().findViewById(R.id.tab_item_text_view))
                 .setText(mActivity.getResources().getString(R.string.tab_legislation));
 
+        topTab.getTabAt(0).select();
+
         topTab.getTabAt(0).getCustomView().findViewById(R.id.tab_item_text_view)
                 .setBackground(mActivity.getResources().getDrawable(R.drawable.tab_item_background_selected));
 
         mBottomManager.setBottomForSwaps();
+        topTab.clearOnTabSelectedListeners();
         topTab.addOnTabSelectedListener(this);
     }
 
@@ -91,5 +96,9 @@ public class TopTabManager implements TabLayout.OnTabSelectedListener {
 
     public int getTabType(){
         return mTabType;
+    }
+
+    public BottomTabManager getBottomTabManager(){
+        return mBottomManager;
     }
 }

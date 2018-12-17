@@ -24,7 +24,7 @@
             android:id="@+id/swap_first_included_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/dem_swap_background"
+            android:background="@color/lighter_gray"
             card_view:layout_constraintBottom_toTopOf="@id/swap_net_rating_view"
             card_view:layout_constraintTop_toTopOf="parent">
 
@@ -38,29 +38,37 @@
 
         <TextView
             android:id="@+id/swap_net_rating_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
             card_view:layout_constraintBottom_toTopOf="@id/swap_second_included_container"
             card_view:layout_constraintLeft_toLeftOf="parent"
+            card_view:layout_constraintRight_toLeftOf="@id/swap_proposed_by_name"
             card_view:layout_constraintTop_toBottomOf="@id/swap_first_included_container"
-            android:text="Swap Rating: +45"/>
+            android:text="@string/craft_swap_placeholder_rating"/>
 
         <TextView
             android:id="@+id/swap_proposed_by_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginStart="16dp"
             card_view:layout_constraintBottom_toTopOf="@id/swap_second_included_container"
             card_view:layout_constraintRight_toRightOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@id/swap_first_included_container"
-            android:text="Proposed by: Jonny Hero"/>
+            card_view:layout_constraintLeft_toRightOf="@id/swap_net_rating_view"
+            card_view:layout_constraintTop_toBottomOf="@id/swap_first_included_container" />
 
         <FrameLayout
             android:id="@+id/swap_second_included_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rep_swap_background"
+            android:background="@color/lighter_gray"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintTop_toBottomOf="@id/swap_proposed_by_name">
             <include
@@ -71,5 +79,14 @@
                 android:layout_height="match_parent" />
         </FrameLayout>
     </android.support.constraint.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/swap_layout_refresh_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/browse_refresh_button"
+        android:src="@drawable/ic_refresh_black_24dp"
+        android:layout_gravity="top|end"
+        android:visibility="gone"/>
 
 </android.support.v7.widget.CardView>

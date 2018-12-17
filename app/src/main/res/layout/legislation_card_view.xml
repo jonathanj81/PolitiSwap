@@ -31,22 +31,41 @@
             card_view:layout_constraintVertical_chainStyle="spread"
             card_view:layout_constraintVertical_weight="4">
 
-            <TextView
-                android:id="@+id/recent_bill_slug_number"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="4dp"
-                android:gravity="start"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/recent_bill_slug_number"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:paddingStart="4dp"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1" />
+
+                <TextView
+                    android:id="@+id/propublica_acknowledgement"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:layout_gravity="end"
+                    android:paddingEnd="4dp"
+                    android:textColor="@color/light_gray"
+                    android:text="@string/source_propublica"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/recent_bill_subjects"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="4dp"
-                android:gravity="start"
                 android:layout_marginBottom="4dp"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"/>
+                android:gravity="start"
+                android:paddingStart="4dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" />
 
             <TextView
                 android:id="@+id/recent_bill_title_text_view"

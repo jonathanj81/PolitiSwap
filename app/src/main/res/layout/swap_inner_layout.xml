@@ -1,90 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout android:id="@+id/swap_first_inner_layout"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swap_first_inner_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:padding="2dp"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:padding="2dp">
 
     <TextView
         android:id="@+id/swap_first_creator_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-        card_view:layout_constraintTop_toTopOf="parent"
-        android:gravity="end"
         android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
         android:layout_marginTop="2dp"
+        android:layout_marginEnd="4dp"
+        android:gravity="end"
+        android:text="@string/craft_swap_placeholder_creator"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+        card_view:layout_constraintLeft_toRightOf="@id/swap_first_icon_layout"
         card_view:layout_constraintRight_toRightOf="parent"
-        android:text="Jonny Danger"/>
+        card_view:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/swap_first_icon_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="2dp"
+        android:gravity="center_horizontal"
+        card_view:layout_constraintTop_toTopOf="@id/swap_first_creator_name"
+        card_view:layout_constraintLeft_toRightOf="@id/swap_first_subject_line"
+        card_view:layout_constraintRight_toLeftOf="@id/swap_first_creator_name">
+
+        <ImageView
+            android:id="@+id/swap_first_created_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_document_svg_gray" />
+
+        <ImageView
+            android:id="@+id/swap_first_voted_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check_box_gray"/>
+    </LinearLayout>
+
     <TextView
         android:id="@+id/swap_first_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-        card_view:layout_constraintTop_toBottomOf="@id/swap_first_creator_name"
-        android:gravity="end"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
+        android:gravity="end"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
         card_view:layout_constraintRight_toRightOf="parent"
-        android:text="11/25/2018"/>
+        card_view:layout_constraintTop_toBottomOf="@id/swap_first_creator_name" />
+
     <TextView
         android:id="@+id/swap_first_subject_line"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:gravity="start"
-        card_view:layout_constraintTop_toTopOf="parent"
-        card_view:layout_constraintLeft_toLeftOf="parent"
-        card_view:layout_constraintRight_toLeftOf="@id/swap_first_creator_name"
+        android:text="@string/craft_swap_placeholder_subject"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
         card_view:layout_constraintBottom_toTopOf="@id/swap_first_title_line"
-        android:text="Health Care"/>
+        card_view:layout_constraintLeft_toLeftOf="parent"
+        card_view:layout_constraintRight_toLeftOf="@id/swap_first_icon_layout"
+        card_view:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/swap_first_title_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-        android:textStyle="bold"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:gravity="start"
-        card_view:layout_constraintTop_toBottomOf="@id/swap_first_date"
-        card_view:layout_constraintLeft_toLeftOf="parent"
+        android:text="@string/craft_swap_placeholder_title"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
         card_view:layout_constraintBottom_toTopOf="@id/swap_first_summary_line"
-        android:text="Universal Healthcare via New Tax Revenue"/>
+        card_view:layout_constraintLeft_toLeftOf="parent"
+        card_view:layout_constraintTop_toBottomOf="@id/swap_first_date" />
+
     <TextView
         android:id="@+id/swap_first_summary_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-        android:layout_marginEnd="2dp"
         android:layout_marginStart="4dp"
+        android:layout_marginEnd="2dp"
         android:layout_marginBottom="8dp"
-        android:paddingEnd="4dp"
+        android:ellipsize="end"
         android:gravity="start"
         android:maxLines="2"
-        android:ellipsize="end"
-        card_view:layout_constraintTop_toBottomOf="@id/swap_first_title_line"
-        card_view:layout_constraintLeft_toLeftOf="parent"
+        android:paddingEnd="4dp"
+        android:paddingStart="2dp"
+        android:text="@string/craft_swap_placeholder_summary"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
         card_view:layout_constraintBottom_toTopOf="@id/swap_first_thumbs_up_count"
-        android:text="This policy would implement a universal, single-payer health care system, funded by an aggressive re-progressification of high income bracket taxes and parity in capital gains taxes."/>
+        card_view:layout_constraintLeft_toLeftOf="parent"
+        card_view:layout_constraintTop_toBottomOf="@id/swap_first_title_line" />
+
     <TextView
         android:id="@+id/swap_first_thumbs_up_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
+        android:text="@string/craft_swap_placeholder_count"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+        card_view:layout_constraintBottom_toBottomOf="parent"
         card_view:layout_constraintLeft_toLeftOf="parent"
         card_view:layout_constraintRight_toRightOf="parent"
-        card_view:layout_constraintBottom_toBottomOf="parent"
-        card_view:layout_constraintTop_toBottomOf="@id/swap_first_summary_line"
-        android:text="345 Dems want this policy."/>
+        card_view:layout_constraintTop_toBottomOf="@id/swap_first_summary_line" />
 
 </android.support.constraint.ConstraintLayout>

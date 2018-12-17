@@ -1,5 +1,7 @@
 package com.example.jon.politiswap.DialogFragments;
 
+import com.example.jon.politiswap.DataUtils.Policy;
+
 public class FragmentArgs {
 
     public static String BILL_DIALOG_SLUG_NUMBER;
@@ -19,4 +21,9 @@ public class FragmentArgs {
     public static String POLICY_DETAIL_DATE;
     public static String POLICY_DETAIL_SUBJECTS;
     public static String POLICY_LONG_ID;
+
+    public static String SWAP_DETAIL_CREATOR;
+    public static double SWAP_DETAIL_RATING;
+    public static Policy SWAP_DETAIL_TOP_POLICY;
+    public static Policy SWAP_DETAIL_BOTTOM_POLICY;
 }

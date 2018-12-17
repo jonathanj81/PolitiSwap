@@ -12,11 +12,11 @@
 
     <string name="bottom_swaps_rated">Top Rated</string>
     <string name="bottom_swaps_new">New</string>
-    <string name="bottom_swaps_search">Search</string>
+    <string name="bottom_swaps_search">Browse</string>
 
     <string name="bottom_policies_wanted">Most Wanted</string>
     <string name="bottom_policies_new">New</string>
-    <string name="bottom_policies_search">Search</string>
+    <string name="bottom_policies_search">Browse</string>
 
     <string name="bottom_activity_swaps">Swaps</string>
     <string name="bottom_activity_policies">Policies</string>
@@ -92,14 +92,47 @@
     <string name="policy_detail_no_button">I don\'t want this policy.</string>
     <string name="policy_detail_already_voted_button">You have voted on this policy. Click here to change vote.</string>
     <string name="policy_detail_other_party_button">You cannot vote on another party\'s policy.</string>
+    <string name="policy_detail_guest_button">You cannot vote as a guest.</string>
 
     <string name="policy_yes_vote_partial">in favor of</string>
     <string name="policy_no_vote_partial">against</string>
+    <string name="policy_neutral_vote_partial">neutral on</string>
     <string name="policy_vote_message">You have voted %1$s this policy.</string>
 
-    <string name="change_policy_vote_yes">Yes</string>
-    <string name="change_policy_vote_no">No</string>
+    <string name="change_policy_vote_yes">Switch Vote</string>
+    <string name="change_policy_vote_no">Keep Vote</string>
+    <string name="change_policy_vote_remove">Remove Vote</string>
     <string name="change_policy_vote_title">Change Vote</string>
     <string name="change_policy_vote_no_response">Your current vote has been retained.</string>
     <string name="change_policy_vote_message">Your current vote is %1$s the policy.  Would you like to switch it?</string>
+
+    <string name="source_propublica" translatable="false">Source: ProPublica</string>
+    <string name="search_propublica" >Search Congressional Database</string>
+
+    <string name="craft_swap_dem_button">Select a Democratic policy</string>
+    <string name="craft_swap_rep_button">Select a Republican policy</string>
+    <string name="craft_swap_placeholder_creator">Creator</string>
+    <string name="craft_swap_placeholder_subject">subject</string>
+    <string name="craft_swap_placeholder_title">Title</string>
+    <string name="craft_swap_placeholder_summary">Policy detail</string>
+    <string name="craft_swap_placeholder_count">0 constituents want this policy.</string>
+    <string name="craft_swap_placeholder_rating">Swap rating: 0</string>
+    <string name="craft_swap_proposer">Proposed by: %1$s</string>
+    <string name="craft_swap_rating">Swap rating: %1$s</string>
+    <string name="craft_swap_header">Craft New Swap</string>
+    <string name="craft_swap_choice_header">%1$s Policies</string>
+    <string name="craft_swap_choice_instruction">Select a browsing method.</string>
+    <string name="craft_swap_browse_subject">by subject</string>
+    <string name="craft_swap_browse_recent">most recent</string>
+    <string name="craft_swap_browse_top">most wanted</string>
+    <string name="craft_swap_no_policies">No policies matching your criteria were found.</string>
+    <string name="craft_swap_close_title">Closing new swap&#8230;</string>
+    <string name="craft_swap_change_dem_policy">Change Democratic policy</string>
+    <string name="craft_swap_change_rep_policy">Change Republican policy</string>
+    <string name="craft_swap_publish">Publish swap</string>
+    <string name="craft_swap_change_either_policy">Change a policy</string>
+    <string name="craft_swap_publish_title">Publish Swap</string>
+    <string name="craft_swap_publish_message">Would you like to publish this swap?  It will be visible to all users.</string>
+
+    <string name="browse_refresh_button">Refresh</string>
 </resources>

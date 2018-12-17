@@ -123,6 +123,24 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/alt_search_legislation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:fillViewport="true"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <include
+            android:id="@+id/alt_legislation_search_included_layout"
+            layout="@layout/search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/alt_search_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -145,8 +163,8 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
         android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="128dp"
         android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
