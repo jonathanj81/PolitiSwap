@@ -15,7 +15,7 @@ public class RetrofitLegislationFetcher {
     private static SearchedBills searchedBills;
     private static RecentBills recentBills;
 
-    public static SearchedBills getSearchedBills(String query) {
+    public static SearchedBills getSearchedBills(String query, int offset) {
 
         OkHttpClient httpClient = new OkHttpClient();
 
@@ -28,7 +28,7 @@ public class RetrofitLegislationFetcher {
 
         LegislationClient client = retrofit.create(LegislationClient.class);
 
-        Call<SearchedBills> call = client.getSearchedResultsFromJson(query, "date");
+        Call<SearchedBills> call = client.getSearchedResultsFromJson(query, "date", offset);
 
         try {
             return call.execute().body();

@@ -6,7 +6,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jon.politiswap.DataUtils.Policy;
-import com.example.jon.politiswap.DataUtils.Recent.RecentBills;
 import com.example.jon.politiswap.DataUtils.Swap;
 import com.example.jon.politiswap.DialogFragments.FragmentArgs;
-import com.example.jon.politiswap.DialogFragments.PolicyDetailFragment;
 import com.example.jon.politiswap.DialogFragments.SwapDetailFragment;
 import com.example.jon.politiswap.MainActivity;
 import com.example.jon.politiswap.R;
@@ -31,11 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHolder> {
 
@@ -44,10 +38,12 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
     private Context mContext;
     private DatabaseReference mDatabaseReference;
     private int mModifier = 0;
+    private OnBottomReachedListener onBottomReachedListener;
 
     private static final String SWAP_FRAGMENT_NAME = "swap_frag";
 
-    public SwapsAdapter(){
+    public SwapsAdapter(OnBottomReachedListener onBottomReachedListener) {
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
     @NonNull
@@ -57,13 +53,13 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference("Policies");
 
-        View layoutView = LayoutInflater.from(mContext).inflate(R.layout.swap_layout_card_view, viewGroup,false);
+        View layoutView = LayoutInflater.from(mContext).inflate(R.layout.swap_layout_card_view, viewGroup, false);
         return new SwapsViewHolder(layoutView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final SwapsViewHolder holder, int i) {
-        if (i == 0 && MainActivity.mAdapterNeeded == 2){
+        if (i == 0 && MainActivity.mAdapterNeeded == 2) {
             mModifier = 1;
             holder.mMainLayout.setVisibility(View.GONE);
             holder.mRefreshButton.setVisibility(View.VISIBLE);
@@ -79,7 +75,7 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
             holder.mRatingView.setText(String.format(mContext.getResources().getString(R.string.craft_swap_rating),
                     String.valueOf(swap.getRating())));
             holder.mProposedByView.setText(String.format(mContext.getResources().getString(R.string.craft_swap_proposer),
-                    swap.getCreator()));
+                    swap.getCreator(), getDate(Long.valueOf(swap.getTimestamp()))));
             holder.mProposedByView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
             holder.mProposedByView.setSingleLine(true);
             holder.mProposedByView.setMarqueeRepeatLimit(-1);
@@ -93,6 +89,17 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
             } else {
                 holder.mTopFrame.setBackground(mContext.getResources().getDrawable(R.drawable.rep_swap_background));
                 holder.mBottomFrame.setBackground(mContext.getResources().getDrawable(R.drawable.dem_swap_background));
+            }
+
+            if (MainActivity.mUserSwapCreated.contains(swap.getLongID())) {
+                holder.mCreatedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_document_svg_black));
+            } else {
+                holder.mCreatedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_document_svg_gray));
+            }
+            if (MainActivity.mUserSwapVoted.contains(swap.getLongID())) {
+                holder.mVotedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_check_box_black));
+            } else {
+                holder.mVotedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_check_box_gray));
             }
 
             final List<Policy> tempList = new ArrayList<>();
@@ -136,6 +143,10 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
 
                 }
             });
+
+            if (i == mSwaps.size() - 1 && !MainActivity.isAtEnd) {
+                onBottomReachedListener.onBottomReached();
+            }
         }
     }
 
@@ -146,13 +157,23 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
         return mSwaps.size();
     }
 
-    public void setSwaps(List<Swap> swaps) {
-        mSwaps = swaps;
+    public void setSwaps(List<Swap> swaps, boolean fromScroll) {
+        MainActivity.isAtEnd = swaps.size() < 20;
+
+        if (fromScroll) {
+            swaps.remove(0);
+            mSwaps.addAll(swaps);
+        } else {
+            mSwaps = swaps;
+        }
         mModifier = 0;
+        if (swaps.size() > 0) {
+            MainActivity.mLastFirebaseNode = mSwaps.get(mSwaps.size() - 1).getLongID();
+        }
         notifyDataSetChanged();
     }
 
-    public class SwapsViewHolder extends RecyclerView.ViewHolder{
+    public class SwapsViewHolder extends RecyclerView.ViewHolder {
 
         final TextView mProposedByView;
         final TextView mRatingView;
@@ -162,6 +183,8 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
         final ConstraintLayout mBottomLayout;
         final ConstraintLayout mMainLayout;
         final ImageButton mRefreshButton;
+        final ImageView mCreatedIcon;
+        final ImageView mVotedIcon;
 
         public SwapsViewHolder(@NonNull View view) {
             super(view);
@@ -173,11 +196,13 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
             mBottomLayout = view.findViewById(R.id.swap_second_included_layout);
             mRefreshButton = view.findViewById(R.id.swap_layout_refresh_button);
             mMainLayout = view.findViewById(R.id.swap_constraint_layout);
+            mCreatedIcon = view.findViewById(R.id.swap_center_created_icon);
+            mVotedIcon = view.findViewById(R.id.swap_center_voted_icon);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position = getAdapterPosition()-mModifier;
+                    int position = getAdapterPosition() - mModifier;
                     Swap swap = mSwaps.get(position);
                     Policy demPolicy = mPolicyPairs.get(position).get(0);
                     Policy repPolicy = mPolicyPairs.get(position).get(1);
@@ -186,7 +211,10 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
                     FragmentArgs.SWAP_DETAIL_RATING = swap.getRating();
                     FragmentArgs.SWAP_DETAIL_TOP_POLICY = swap.getPartyOnTop().equals("Democrat") ? demPolicy : repPolicy;
                     FragmentArgs.SWAP_DETAIL_BOTTOM_POLICY = swap.getPartyOnTop().equals("Democrat") ? repPolicy : demPolicy;
+                    FragmentArgs.SWAP_DETAIL_TIMESTAMP = swap.getTimestamp();
+                    FragmentArgs.SWAP_LONG_ID = swap.getLongID();
 
+                    FragmentArgs.MAIN_RECYCLER_STATE = ((MainActivity) view.getContext()).getRecyclerView().getLayoutManager().onSaveInstanceState();
                     FragmentManager fm = ((MainActivity) view.getContext()).getSupportFragmentManager();
                     SwapDetailFragment frag = SwapDetailFragment.newInstance(null);
                     frag.show(fm, SWAP_FRAGMENT_NAME);
@@ -195,30 +223,36 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
         }
     }
 
-    private void fillPolicyLayout(ConstraintLayout layout, Policy policy){
-        ((TextView)layout.findViewById(R.id.swap_first_title_line)).setText(policy.getTitle());
-        ((TextView)layout.findViewById(R.id.swap_first_summary_line)).setText(policy.getSummary());
-        ((TextView)layout.findViewById(R.id.swap_first_creator_name)).setText(policy.getCreator());
-        ((TextView)layout.findViewById(R.id.swap_first_thumbs_up_count))
+    private void fillPolicyLayout(ConstraintLayout layout, Policy policy) {
+        ((TextView) layout.findViewById(R.id.swap_first_title_line)).setText(policy.getTitle());
+        ((TextView) layout.findViewById(R.id.swap_first_summary_line)).setText(policy.getSummary());
+        ((TextView) layout.findViewById(R.id.swap_first_creator_name)).setText(policy.getCreator());
+        ((TextView) layout.findViewById(R.id.swap_first_thumbs_up_count))
                 .setText(String.format(mContext.getResources().getString(R.string.policy_net_wanted),
                         policy.getNetWanted(), policy.getParty()));
         String subjects = policy.getSubjects().toString();
-        ((TextView)layout.findViewById(R.id.swap_first_subject_line))
+        ((TextView) layout.findViewById(R.id.swap_first_subject_line))
                 .setText(subjects.substring(1, subjects.length() - 1));
         if (MainActivity.mUserCreated.contains(policy.getLongID())) {
-            ((ImageView)layout.findViewById(R.id.swap_first_created_icon))
+            ((ImageView) layout.findViewById(R.id.swap_first_created_icon))
                     .setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_document_svg_black));
         }
         if (MainActivity.mUserVoted.contains(policy.getLongID())) {
-            ((ImageView)layout.findViewById(R.id.swap_first_voted_icon))
+            ((ImageView) layout.findViewById(R.id.swap_first_voted_icon))
                     .setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_check_box_black));
         }
+        layout.findViewById(R.id.swap_first_icon_layout).setVisibility(View.GONE);
+        ((TextView) layout.findViewById(R.id.swap_first_date))
+                .setText(getDate(Long.valueOf(policy.getTimeStamp())));
+    }
+
+    private String getDate(long time) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(Long.valueOf(policy.getTimeStamp()));
+        calendar.setTimeInMillis(time);
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        ((TextView)layout.findViewById(R.id.swap_first_date))
-                .setText(String.valueOf(month + 1) + "/" + String.valueOf(day) + "/" + String.valueOf(year));
+
+        return String.valueOf(month + 1) + "/" + String.valueOf(day) + "/" + String.valueOf(year);
     }
 }

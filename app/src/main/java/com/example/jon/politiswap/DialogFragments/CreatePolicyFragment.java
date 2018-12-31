@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jon.politiswap.DataUtils.Policy;
+import com.example.jon.politiswap.DataUtils.Tasks.FirebaseRetrievalCalls;
 import com.example.jon.politiswap.MainActivity;
 import com.example.jon.politiswap.R;
 import com.example.jon.politiswap.UiAdapters.CreateSubjectAvailableAdapter;
@@ -310,6 +311,7 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
                         ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
                         dismiss();
+                        ((MainActivity)getActivity()).getRecyclerView().getLayoutManager().onRestoreInstanceState(MainActivity.recyclerViewState);
                     }
                 });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.craft_policy_close_cancel),
@@ -362,8 +364,20 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         mDatabaseReference = mFirebaseDatabase.getReference("Subjects");
         for (String subject : mSubjects){
             subject = subject.replace("/","");
-            mDatabaseReference.child(subject).child("byPolicy").push().setValue(pushId);
+            mDatabaseReference.child(subject).child("byPolicy").child(pushId).setValue(pushId);
         }
         MainActivity.mUserCreated.add(pushId);
+
+        mDatabaseReference = mFirebaseDatabase.getReference("UserInfo/" + MainActivity.USER_ID);
+        MainActivity.USER_POLICY_POINTS += 5;
+        MainActivity.USER_OVERALL_POINTS += 5;
+        mDatabaseReference.child("overallPoints").setValue(MainActivity.USER_OVERALL_POINTS);
+        mDatabaseReference.child("policyCreatedPoints").setValue(MainActivity.USER_POLICY_POINTS);
+
+        if (MainActivity.mAdapterNeeded == 3){
+            new FirebaseRetrievalCalls((MainActivity)getActivity(), false).getTopPolicies();
+        } else {
+            new FirebaseRetrievalCalls((MainActivity) getActivity(), false).getNewPolicies();
+        }
     }
 }

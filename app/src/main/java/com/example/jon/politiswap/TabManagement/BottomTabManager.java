@@ -83,11 +83,13 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
     }
 
     public void getSearchScreen() {
+        mProgressBar.hide();
         mMainContentRecyclerView.setVisibility(View.GONE);
         mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.VISIBLE);
         mActivity.findViewById(R.id.craft_policy_step_number_1).setVisibility(View.GONE);
         mActivity.findViewById(R.id.craft_subject_recycler_and_placeholder_frame).setVisibility(View.GONE);
         mActivity.findViewById(R.id.alt_search_cancel_button).setVisibility(View.GONE);
+        mActivity.findViewById(R.id.craft_subject_title_text_view).setVisibility(View.VISIBLE);
         TextView titleView = mActivity.findViewById(R.id.craft_subject_title_text_view);
         titleView.setText(mActivity.getResources().getString(R.string.search_alt_subject_hint));
 
@@ -106,11 +108,12 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
     public void addSubject(final String subject) {
         mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
         mProgressBar.show();
+        MainActivity.mCurrentAreaSubject = subject;
 
         if (MainActivity.mAdapterNeeded == 2){
-            new FirebaseRetrievalCalls(mActivity).getSwapAreaSearch(subject);
+            new FirebaseRetrievalCalls(mActivity, false).getSwapAreaSearch(subject);
         } else {
-            new FirebaseRetrievalCalls(mActivity).getPolicyAreaSearch(subject);
+            new FirebaseRetrievalCalls(mActivity, false).getPolicyAreaSearch(subject);
         }
     }
 
@@ -123,6 +126,7 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
         mThreeTabs.clearOnTabSelectedListeners();
         mMainContentRecyclerView.setVisibility(View.VISIBLE);
         mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
+        mActivity.findViewById(R.id.alt_score_layout).setVisibility(View.GONE);
         if (MainActivity.mAdapterNeeded == 10) {
             mActivity.findViewById(R.id.alt_search_legislation_layout).setVisibility(View.GONE);
             ((InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE))

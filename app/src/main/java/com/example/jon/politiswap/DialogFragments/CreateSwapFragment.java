@@ -19,7 +19,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.jon.politiswap.UiAdapters.OnBottomReachedListener;
 import com.example.jon.politiswap.DataUtils.Policy;
 import com.example.jon.politiswap.DataUtils.Swap;
 import com.example.jon.politiswap.DataUtils.Tasks.FirebaseRetrievalCalls;
@@ -27,10 +29,11 @@ import com.example.jon.politiswap.MainActivity;
 import com.example.jon.politiswap.R;
 import com.example.jon.politiswap.UiAdapters.CreateSubjectAvailableAdapter;
 import com.example.jon.politiswap.UiAdapters.PolicyAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import org.w3c.dom.Text;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,13 +43,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CreateSwapFragment extends DialogFragment implements View.OnClickListener, FirebaseRetrievalCalls.RetrieveFirebase, CreateSubjectAvailableAdapter.SubjectChangeManager {
+public class CreateSwapFragment extends DialogFragment implements View.OnClickListener, FirebaseRetrievalCalls.RetrieveFirebase, CreateSubjectAvailableAdapter.SubjectChangeManager, OnBottomReachedListener {
 
     private View mRootView;
     private MainActivity mActivity;
     private RecyclerView mPolicyChoicesRecycler;
     private RecyclerView mSubjectChoicesRecycler;
-    private CreateSubjectAvailableAdapter mSubjectsAdapter;
+    private CreateSubjectAvailableAdapter mSubjectAvailableAdapter;
     private PolicyAdapter mPolicyAdapter;
     private String mTargetParty;
     private TextView mHeaderView;
@@ -63,6 +66,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
     private Button mRepButton;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
+    private int mBrowseType;
 
     public CreateSwapFragment() {
 
@@ -87,12 +91,16 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
         mActivity = (MainActivity) getActivity();
         mHeaderView = mRootView.findViewById(R.id.create_swap_header_text_view);
         ((TextView) mRootView.findViewById(R.id.swap_proposed_by_name))
-                .setText(String.format(getResources().getString(R.string.craft_swap_proposer), MainActivity.USERNAME));
+                .setText(String.format(getResources().getString(R.string.craft_swap_proposer), MainActivity.USERNAME, getDate(System.currentTimeMillis())));
         ((TextView) mRootView.findViewById(R.id.swap_first_date)).setText(getTodaysDate());
         ((TextView) mRootView.findViewById(R.id.swap_second_included_layout).findViewById(R.id.swap_first_date)).setText(getTodaysDate());
 
-        mPolicyAdapter = new PolicyAdapter(1);
-        mSubjectsAdapter = new CreateSubjectAvailableAdapter(this, 0);
+        mRootView.findViewById(R.id.swap_first_included_layout).findViewById(R.id.swap_first_voted_icon).setVisibility(View.INVISIBLE);
+        mRootView.findViewById(R.id.swap_first_included_layout).findViewById(R.id.swap_first_created_icon).setVisibility(View.INVISIBLE);
+        mRootView.findViewById(R.id.swap_second_included_layout).findViewById(R.id.swap_first_voted_icon).setVisibility(View.INVISIBLE);
+        mRootView.findViewById(R.id.swap_second_included_layout).findViewById(R.id.swap_first_created_icon).setVisibility(View.INVISIBLE);
+
+        mPolicyAdapter = new PolicyAdapter(1, this);
 
         mPolicyChoicesRecycler = mRootView.findViewById(R.id.create_swap_choices_recycler);
         mPolicyChoicesRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -127,7 +135,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
     public void onResume() {
         ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.height = WindowManager.LayoutParams.MATCH_PARENT;
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -163,13 +171,16 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
                 }
                 break;
             case R.id.create_swap_browse_subject_button:
-                getSelectionRecycler(0);
+                mBrowseType = 0;
+                getSelectionRecycler();
                 break;
             case R.id.create_swap_browse_recent_button:
-                getSelectionRecycler(1);
+                mBrowseType = 1;
+                getSelectionRecycler();
                 break;
             case R.id.create_swap_browse_top_button:
-                getSelectionRecycler(2);
+                mBrowseType = 2;
+                getSelectionRecycler();
                 break;
             case R.id.craft_swap_choices_back:
                 if (mRootView.findViewById(R.id.create_swap_progress_layout).isShown()) {
@@ -199,25 +210,33 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
                 .setText(getResources().getString(R.string.craft_policy_small_back));
     }
 
-    private void getSelectionRecycler(int browseType) {
+    private void getSelectionRecycler() {
         mRootView.findViewById(R.id.create_swap_browse_method_layout).setVisibility(View.GONE);
+        MainActivity.mLastFirebaseNode = "";
 
-        switch (browseType) {
+        switch (mBrowseType) {
             case 0:
+                prepAvailableRecycler();
+                mRootView.findViewById(R.id.create_swap_subject_choices_layout).setVisibility(View.VISIBLE);
+                mRootView.findViewById(R.id.craft_subject_recycler_and_placeholder_frame).setVisibility(View.GONE);
+                mRootView.findViewById(R.id.craft_policy_step_number_1).setVisibility(View.GONE);
+                ((TextView)mRootView.findViewById(R.id.craft_subject_title_text_view))
+                        .setText(getResources().getString(R.string.search_alt_subject_hint));
                 break;
             case 1:
-                new FirebaseRetrievalCalls(this).getNewPolices();
+                new FirebaseRetrievalCalls(this, false).getNewPolicies();
                 mRootView.findViewById(R.id.create_swap_choices_layout).setVisibility(View.VISIBLE);
                 break;
             case 2:
-                new FirebaseRetrievalCalls(this).getTopPolicies();
+                new FirebaseRetrievalCalls(this, false).getTopPolicies();
                 mRootView.findViewById(R.id.create_swap_choices_layout).setVisibility(View.VISIBLE);
                 break;
         }
     }
 
     @Override
-    public void newPoliciesSent(List<Policy> policies) {
+    public void newPoliciesSent(List<Policy> policies, boolean fromScroll) {
+        MainActivity.isAtEnd = policies.size() < 20;
         List<Policy> tempPolicies = new ArrayList<>();
         for (Policy policy : policies) {
             if (policy.getParty().equals(mTargetParty) && policy.getNetWanted() >= 0) {
@@ -226,18 +245,23 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
         }
         if (tempPolicies.size() == 0) {
             mRootView.findViewById(R.id.create_swap_no_policies_found_text).setVisibility(View.VISIBLE);
+        } else {
+            mRootView.findViewById(R.id.create_swap_no_policies_found_text).setVisibility(View.GONE);
         }
-        mPolicyAdapter.setPolicies(tempPolicies);
+        mPolicyAdapter.setPolicies(tempPolicies, fromScroll);
     }
 
     @Override
-    public void newSwapsSent(List<Swap> swaps) {
+    public void newSwapsSent(List<Swap> swaps, boolean fromScroll) {
 
     }
 
     @Override
     public void addSubject(String subject) {
-
+        new FirebaseRetrievalCalls(this, false).getPolicyAreaSearch(subject);
+        mRootView.findViewById(R.id.create_swap_subject_choices_layout).setVisibility(View.GONE);
+        mRootView.findViewById(R.id.create_swap_choices_layout).setVisibility(View.VISIBLE);
+        MainActivity.mCurrentAreaSubject = subject;
     }
 
     @Override
@@ -246,6 +270,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
     }
 
     private void resetScreens() {
+        mRootView.findViewById(R.id.create_swap_subject_choices_layout).setVisibility(View.GONE);
         mRootView.findViewById(R.id.create_swap_choices_layout).setVisibility(View.GONE);
         mRootView.findViewById(R.id.create_swap_browse_method_layout).setVisibility(View.GONE);
         mRootView.findViewById(R.id.create_swap_progress_layout).setVisibility(View.VISIBLE);
@@ -266,6 +291,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
                         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
                         dismiss();
+                        mActivity.getRecyclerView().getLayoutManager().onRestoreInstanceState(MainActivity.recyclerViewState);
                     }
                 });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.craft_policy_close_cancel),
@@ -302,6 +328,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
         mSelectedPolicySubjects.put(party,policy.getSubjects());
 
         if (party.equals("Democrat")){
+            mLayoutDem.findViewById(R.id.swap_first_icon_layout).setVisibility(View.GONE);
             ((TextView) mLayoutDem.findViewById(R.id.swap_first_creator_name)).setText(policy.getCreator());
             ((TextView) mLayoutDem.findViewById(R.id.swap_first_subject_line)).setText(subjects.substring(1, subjects.length() - 1));
             ((TextView) mLayoutDem.findViewById(R.id.swap_first_title_line)).setText(policy.getTitle());
@@ -312,6 +339,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
             mFrameDem.setBackground(getResources().getDrawable(R.drawable.dem_swap_background));
             mDemButton.setText(getResources().getString(R.string.craft_swap_change_dem_policy));
         } else {
+            mLayoutRep.findViewById(R.id.swap_first_icon_layout).setVisibility(View.GONE);
             ((TextView) mLayoutRep.findViewById(R.id.swap_first_creator_name)).setText(policy.getCreator());
             ((TextView) mLayoutRep.findViewById(R.id.swap_first_subject_line)).setText(subjects.substring(1, subjects.length() - 1));
             ((TextView) mLayoutRep.findViewById(R.id.swap_first_title_line)).setText(policy.getTitle());
@@ -327,7 +355,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
             mReadyToGo = true;
             mDemButton.setText(getResources().getString(R.string.craft_swap_publish));
             mRepButton.setText(getResources().getString(R.string.craft_swap_change_either_policy));
-            mDemButton.setBackgroundColor(getResources().getColor(R.color.darkGray));
+            mDemButton.setBackground(getResources().getDrawable(R.drawable.button_yes_background));
             mRepButton.setBackgroundColor(getResources().getColor(R.color.darkGray));
         }
     }
@@ -348,7 +376,6 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        dismiss();
                         addToDatabase();
                     }
                 });
@@ -363,32 +390,105 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
     }
 
     private void addToDatabase(){
-        String pushId = mDatabaseReference.push().getKey();
+        final String demID = mSelectedPolicies.get("Democrat");
+        final String repID = mSelectedPolicies.get("Republican");
 
-        Swap swap = new Swap(MainActivity.USERNAME,String.valueOf(System.currentTimeMillis()),
-                mSelectedPolicies.get("Democrat"), mSelectedPolicies.get("Republican"),
-                mPartyOnTop, 0, 0, 0,
-                ((double)mSelectedPolicyVotes.get("Democrat") + mSelectedPolicyVotes.get("Republican"))/2);
+        mDatabaseReference = mFirebaseDatabase.getReference("SwapsCheckDuplicates");
+        mDatabaseReference.child(demID+repID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    Toast.makeText(mActivity,getResources().getString(R.string.craft_swap_duplicate_message), Toast.LENGTH_LONG)
+                            .show();
+                } else {
+                    mDatabaseReference = mFirebaseDatabase.getReference("Swaps");
+                    String pushId = mDatabaseReference.push().getKey();
 
-        mDatabaseReference.child(pushId).setValue(swap);
+                    Swap swap = new Swap(MainActivity.USERNAME,String.valueOf(System.currentTimeMillis()),
+                            demID, repID, mPartyOnTop, pushId, 0, 0, 0,
+                            ((double)mSelectedPolicyVotes.get("Democrat") + mSelectedPolicyVotes.get("Republican"))/2);
 
-        mDatabaseReference = mFirebaseDatabase.getReference().child("SwapsByPolicy");
-        mDatabaseReference.child(mSelectedPolicies.get("Democrat")).child(pushId).setValue("yes");
-        mDatabaseReference.child(mSelectedPolicies.get("Republican")).child(pushId).setValue("yes");
+                    mDatabaseReference.child(pushId).setValue(swap);
 
-        mDatabaseReference = mFirebaseDatabase.getReference("UserSwaps").child(MainActivity.USER_ID)
-                .child("Created");
-        mDatabaseReference.push().setValue(pushId);
+                    mDatabaseReference = mFirebaseDatabase.getReference().child("SwapsByPolicy");
+                    mDatabaseReference.child(demID).child(pushId).setValue("yes");
+                    mDatabaseReference.child(repID).child(pushId).setValue("yes");
 
-        Set<String> subjects = new HashSet<>();
-        subjects.addAll(mSelectedPolicySubjects.get("Democrat"));
-        subjects.addAll(mSelectedPolicySubjects.get("Republican"));
+                    mDatabaseReference = mFirebaseDatabase.getReference().child("SwapsCheckDuplicates");
+                    mDatabaseReference.child(demID+repID).setValue(pushId);
 
-        mDatabaseReference = mFirebaseDatabase.getReference("Subjects");
-        for (String subject : subjects){
-            subject = subject.replace("/","");
-            mDatabaseReference.child(subject).child("bySwap").push().setValue(pushId);
+                    mDatabaseReference = mFirebaseDatabase.getReference("UserSwaps").child(MainActivity.USER_ID)
+                            .child("Created");
+                    mDatabaseReference.push().setValue(pushId);
+
+                    Set<String> subjects = new HashSet<>();
+                    subjects.addAll(mSelectedPolicySubjects.get("Democrat"));
+                    subjects.addAll(mSelectedPolicySubjects.get("Republican"));
+
+                    mDatabaseReference = mFirebaseDatabase.getReference("Subjects");
+                    for (String subject : subjects){
+                        subject = subject.replace("/","");
+                        mDatabaseReference.child(subject).child("bySwap").child(pushId).setValue(pushId);
+                    }
+                    MainActivity.mUserSwapCreated.add(pushId);
+
+                    mDatabaseReference = mFirebaseDatabase.getReference("UserInfo/" + MainActivity.USER_ID);
+                    MainActivity.USER_SWAP_POINTS += 5;
+                    MainActivity.USER_OVERALL_POINTS += 5;
+                    mDatabaseReference.child("overallPoints").setValue(MainActivity.USER_OVERALL_POINTS);
+                    mDatabaseReference.child("swapCreatedPoints").setValue(MainActivity.USER_SWAP_POINTS);
+
+                    dismiss();
+
+                    if (MainActivity.mAdapterNeeded == 0){
+                        new FirebaseRetrievalCalls(mActivity, false).getTopSwaps();
+                    } else {
+                        new FirebaseRetrievalCalls(mActivity, false).getNewSwaps();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private String getDate(long time){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        return String.valueOf(month + 1) + "/" + String.valueOf(day) + "/" + String.valueOf(year);
+    }
+
+    private void prepAvailableRecycler() {
+        mSubjectChoicesRecycler = mRootView.findViewById(R.id.craft_subject_available_recycler);
+        mSubjectAvailableAdapter = new CreateSubjectAvailableAdapter(this,0);
+        mSubjectAvailableAdapter.setAll();
+        mSubjectChoicesRecycler.setHasFixedSize(false);
+        mSubjectChoicesRecycler.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false));
+        mSubjectChoicesRecycler.setAdapter(mSubjectAvailableAdapter);
+    }
+
+    @Override
+    public void onBottomReached() {
+        switch (mBrowseType){
+            case 0:
+                //recyclerViewState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+                new FirebaseRetrievalCalls(this, true).getPolicyAreaSearch(MainActivity.mCurrentAreaSubject);
+                break;
+            case 1:
+                new FirebaseRetrievalCalls(this, true).getNewPolicies();
+                break;
+            case 2:
+                new FirebaseRetrievalCalls(this, true).getTopPolicies();
+                break;
         }
-        MainActivity.mUserSwapCreated.add(pushId);
     }
 }

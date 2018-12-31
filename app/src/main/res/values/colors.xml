@@ -8,7 +8,7 @@
     <color name="book_page_color">#fffef3</color>
     <color name="light_gray">#E0E0E0</color>
     <color name="lighter_gray">#EEEEEE</color>
-    <color name="colorDarkerBackgroundGray">#E0E0E0</color>
+    <color name="transparencyBackgroundGray">#B3E0E0E0</color>
     <color name="darkGray">#757575</color>
     <color name="colorLightAccent">#FFA3A3</color>
     <color name="colorPrimaryFull">#B4BEE5</color>

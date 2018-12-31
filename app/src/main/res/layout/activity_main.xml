@@ -119,6 +119,7 @@
         android:id="@+id/content_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
         android:background="@android:color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -158,6 +159,41 @@
 
     </android.support.v4.widget.NestedScrollView>
 
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/alt_no_network_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <include
+            android:id="@+id/alt_no_network_included_layout"
+            layout="@layout/no_network_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"/>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/alt_score_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:fillViewport="true"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <include
+            android:id="@+id/alt_score_included_layout"
+            layout="@layout/user_score_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp" />
+
+    </android.support.v4.widget.NestedScrollView>
+
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/refreshing_bills_progress_bar"
         style="?android:attr/progressBarStyleLarge"
@@ -175,5 +211,14 @@
         android:layout_margin="16dp"
         android:background="@color/raised_button_darker_red"
         android:src="@drawable/ic_add_24dp" />
+
+    <TextView
+        android:id="@+id/user_id_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:background="@android:color/white"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"/>
 
 </android.support.design.widget.CoordinatorLayout>

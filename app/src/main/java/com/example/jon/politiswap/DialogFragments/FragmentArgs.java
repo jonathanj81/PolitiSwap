@@ -1,5 +1,7 @@
 package com.example.jon.politiswap.DialogFragments;
 
+import android.os.Parcelable;
+
 import com.example.jon.politiswap.DataUtils.Policy;
 
 public class FragmentArgs {
@@ -26,4 +28,8 @@ public class FragmentArgs {
     public static double SWAP_DETAIL_RATING;
     public static Policy SWAP_DETAIL_TOP_POLICY;
     public static Policy SWAP_DETAIL_BOTTOM_POLICY;
+    public static String SWAP_DETAIL_TIMESTAMP;
+    public static String SWAP_LONG_ID;
+
+    public static Parcelable MAIN_RECYCLER_STATE;
 }

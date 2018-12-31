@@ -12,7 +12,7 @@ public interface LegislationClient {
 
     @Headers("X-API-Key: ")
     @GET("search.json")
-    Call<SearchedBills> getSearchedResultsFromJson(@Query("query") String query, @Query("sort") String sort);
+    Call<SearchedBills> getSearchedResultsFromJson(@Query("query") String query, @Query("sort") String sort, @Query("offset") int offset);
 
     @Headers("X-API-Key: ")
     @GET("introduced.json")

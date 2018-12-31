@@ -43,9 +43,34 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
             card_view:layout_constraintBottom_toTopOf="@id/swap_second_included_container"
             card_view:layout_constraintLeft_toLeftOf="parent"
-            card_view:layout_constraintRight_toLeftOf="@id/swap_proposed_by_name"
+            card_view:layout_constraintRight_toLeftOf="@id/swap_center_created_icon"
             card_view:layout_constraintTop_toBottomOf="@id/swap_first_included_container"
             android:text="@string/craft_swap_placeholder_rating"/>
+
+        <ImageView
+            android:id="@+id/swap_center_created_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:src="@drawable/ic_document_svg_gray"
+            card_view:layout_constraintHorizontal_chainStyle="packed"
+            card_view:layout_constraintTop_toBottomOf="@id/swap_first_included_container"
+            card_view:layout_constraintBottom_toTopOf="@id/swap_second_included_container"
+            card_view:layout_constraintLeft_toRightOf="@id/swap_net_rating_view"
+            card_view:layout_constraintRight_toLeftOf="@id/swap_center_voted_icon"/>
+
+        <ImageView
+            android:id="@+id/swap_center_voted_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check_box_gray"
+            card_view:layout_constraintHorizontal_chainStyle="packed"
+            card_view:layout_constraintTop_toBottomOf="@id/swap_first_included_container"
+            card_view:layout_constraintBottom_toTopOf="@id/swap_second_included_container"
+            card_view:layout_constraintRight_toLeftOf="@id/swap_proposed_by_name"
+            card_view:layout_constraintLeft_toRightOf="@id/swap_center_created_icon"/>
 
         <TextView
             android:id="@+id/swap_proposed_by_name"
@@ -61,7 +86,7 @@
             android:layout_marginStart="16dp"
             card_view:layout_constraintBottom_toTopOf="@id/swap_second_included_container"
             card_view:layout_constraintRight_toRightOf="parent"
-            card_view:layout_constraintLeft_toRightOf="@id/swap_net_rating_view"
+            card_view:layout_constraintLeft_toRightOf="@id/swap_center_voted_icon"
             card_view:layout_constraintTop_toBottomOf="@id/swap_first_included_container" />
 
         <FrameLayout

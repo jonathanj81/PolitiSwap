@@ -3,6 +3,8 @@ package com.example.jon.politiswap.DataUtils.Tasks;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jon.politiswap.DataUtils.UserInfo;
@@ -30,10 +32,13 @@ public class SignInManager {
 
     public SignInManager(MainActivity activity){
         mActivity = activity;
+        Log.i("HGHGHGHGHGHG", "sign in manager created");
     }
 
     public void ManageSignIn(){
         mFirebaseAuth = FirebaseAuth.getInstance();
+
+        Log.i("HGHGHGHGHGHG", "manage sign in called");
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -42,8 +47,11 @@ public class SignInManager {
                 if (mUser != null){
                     MainActivity.IS_GUEST = mUser.isAnonymous();
                     MainActivity.USER_ID = mUser.getUid();
-                    if (!MainActivity.IS_GUEST && !MainActivity.ASKED_ABOUT_EMAIL){
+                    if (!MainActivity.IS_GUEST){
                         getStartingInfo();
+                    } else {
+                        ((TextView)mActivity.findViewById(R.id.user_id_view))
+                                .setText(mActivity.getResources().getString(R.string.guest));
                     }
                 } else {
                     mActivity.startActivityForResult(
@@ -69,8 +77,14 @@ public class SignInManager {
                         if (info != null) {
                             MainActivity.USERNAME = info.getUsername();
                             MainActivity.PARTY = info.getParty();
+                            MainActivity.USER_VOTE_POINTS = info.getVotePoints();
+                            MainActivity.USER_SWAP_POINTS = info.getSwapCreatedPoints();
+                            MainActivity.USER_POLICY_POINTS = info.getPolicyCreatedPoints();
+                            MainActivity.USER_OVERALL_POINTS = info.getOverallPoints();
+                            ((TextView)mActivity.findViewById(R.id.user_id_view))
+                                    .setText(MainActivity.USERNAME + "       " + MainActivity.PARTY);
                             showVerifyEmailAlert();
-                            new FirebaseRetrievalCalls(mActivity).getInitialLists();
+                            new FirebaseRetrievalCalls(mActivity, false).getInitialLists();
                         } else {
                             getPartyAndEnter();
                         }
@@ -160,9 +174,15 @@ public class SignInManager {
 
     public void userIntoDatabase(){
         MainActivity.USERNAME = mUser.getDisplayName();
-        UserInfo info = new UserInfo(MainActivity.USERNAME, MainActivity.PARTY);
+        UserInfo info = new UserInfo(MainActivity.USERNAME, MainActivity.PARTY, 0, 0, 0, 0);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("UserInfo");
         ref.child(MainActivity.USER_ID).setValue(info);
+        MainActivity.USER_OVERALL_POINTS = 0;
+        MainActivity.USER_POLICY_POINTS = 0;
+        MainActivity.USER_SWAP_POINTS = 0;
+        MainActivity.USER_VOTE_POINTS = 0;
+        ((TextView)mActivity.findViewById(R.id.user_id_view))
+                .setText(MainActivity.USERNAME + "       " + MainActivity.PARTY);
     }
 
     public void loginOptionFrag(){

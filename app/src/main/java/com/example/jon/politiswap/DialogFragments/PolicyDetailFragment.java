@@ -1,30 +1,24 @@
 package com.example.jon.politiswap.DialogFragments;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.text.LoginFilter;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jon.politiswap.DataUtils.Swap;
 import com.example.jon.politiswap.DataUtils.Tasks.FirebaseRetrievalCalls;
+import com.example.jon.politiswap.DataUtils.UserInfo;
 import com.example.jon.politiswap.MainActivity;
 import com.example.jon.politiswap.R;
 import com.google.firebase.database.DataSnapshot;
@@ -32,10 +26,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PolicyDetailFragment extends DialogFragment implements View.OnClickListener {
 
     private View mRootView;
-    private Button mNoButton;
+    private Button mCannotButton;
+    private boolean mAlreadyVoted = false;
+    private boolean mRemovedVote = false;
 
     public PolicyDetailFragment() {
 
@@ -81,13 +80,15 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
         mRootView.findViewById(R.id.policy_detail_close_button).setOnClickListener(this);
         mRootView.findViewById(R.id.policy_detail_vote_yes_button).setOnClickListener(this);
         mRootView.findViewById(R.id.policy_detail_vote_no_button).setOnClickListener(this);
-        mNoButton = mRootView.findViewById(R.id.policy_detail_cannot_vote_button);
-        mNoButton.setOnClickListener(this);
+        mCannotButton = mRootView.findViewById(R.id.policy_detail_cannot_vote_button);
+        mCannotButton.setOnClickListener(this);
 
         if (MainActivity.IS_GUEST){
             prohibitButtons(2);
         } else if (!MainActivity.PARTY.equals(party)) {
             prohibitButtons(0);
+        } else if (FragmentArgs.POLICY_DETAIL_CREATOR.equals(MainActivity.USERNAME)){
+            prohibitButtons(3);
         }
         else {
             alreadyVoted();
@@ -121,11 +122,14 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
         switch (view.getId()){
             case R.id.policy_detail_close_button:
                 dismiss();
+                ((MainActivity)getActivity()).getRecyclerView().getLayoutManager().onRestoreInstanceState(FragmentArgs.MAIN_RECYCLER_STATE);
                 break;
             case R.id.policy_detail_vote_yes_button:
+                updateUserPoints();
                 incrementVote(1, "up");
                 break;
             case R.id.policy_detail_vote_no_button:
+                updateUserPoints();
                 incrementVote(-1, "down");
                 break;
             case R.id.policy_detail_cannot_vote_button:
@@ -144,6 +148,7 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.getValue(String.class).length() > 0){
                     prohibitButtons(1);
+                    mAlreadyVoted = true;
                 }
             }
 
@@ -154,12 +159,36 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
     }
 
     private void incrementVote(final int increment, final String type){
+        mAlreadyVoted = true;
         FirebaseDatabase.getInstance().getReference("Policies").child(FragmentArgs.POLICY_LONG_ID)
                 .child("netWanted").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int value = dataSnapshot.getValue(Integer.class) + increment;
-                dataSnapshot.getRef().setValue(value);
+                int originalValue = dataSnapshot.getValue(Integer.class);
+                int newValue = originalValue + increment;
+                dataSnapshot.getRef().setValue(newValue);
+
+                double ratingDifference = newValue - originalValue;
+                MainActivity.USER_OVERALL_POINTS += ratingDifference;
+                MainActivity.USER_POLICY_POINTS += ratingDifference;
+                FirebaseDatabase.getInstance().getReference("UserInfo").orderByChild("username")
+                        .equalTo(FragmentArgs.POLICY_DETAIL_CREATOR).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                            UserInfo info = snap.getValue(UserInfo.class);
+                            info.setPolicyCreatedPoints(MainActivity.USER_POLICY_POINTS);
+                            info.setOverallPoints(MainActivity.USER_OVERALL_POINTS);
+                            snap.getRef().setValue(info);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 String message;
                 if (type.equals("neutral")){
                     message = getResources().getString(R.string.policy_neutral_vote_partial);
@@ -169,14 +198,18 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                     message = getResources().getString(R.string.policy_yes_vote_partial);
                     FirebaseDatabase.getInstance().getReference("UserPolicies").child(MainActivity.USER_ID)
                             .child("VotedOn").child(FragmentArgs.POLICY_LONG_ID).setValue("yes");
+                    prohibitButtons(1);
                 } else {
                     message = getResources().getString(R.string.policy_no_vote_partial);
                     FirebaseDatabase.getInstance().getReference("UserPolicies").child(MainActivity.USER_ID)
                             .child("VotedOn").child(FragmentArgs.POLICY_LONG_ID).setValue("no");
+                    prohibitButtons(1);
                 }
+
+                updateSwapRatings(increment);
+
                 Toast.makeText(getActivity(),String.format(getResources().getString(R.string.policy_vote_message),message)
                         , Toast.LENGTH_LONG).show();
-                prohibitButtons(1);
                 FragmentArgs.POLICY_DETAIL_NET_WANTED += increment;
                 ((TextView)mRootView.findViewById(R.id.swap_first_thumbs_up_count))
                         .setText(String.format(getResources().getString(R.string.policy_net_wanted),
@@ -184,10 +217,11 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                 if (!MainActivity.mUserVoted.contains(FragmentArgs.POLICY_LONG_ID)){
                     MainActivity.mUserVoted.add(FragmentArgs.POLICY_LONG_ID);
                 }
+
                 if (MainActivity.mAdapterNeeded == 3){
-                    new FirebaseRetrievalCalls((MainActivity)getActivity()).getTopPolicies();
+                    new FirebaseRetrievalCalls((MainActivity)getActivity(), false).getTopPolicies();
                 } else {
-                    new FirebaseRetrievalCalls((MainActivity) getActivity()).getNewPolices();
+                    new FirebaseRetrievalCalls((MainActivity) getActivity(), false).getNewPolicies();
                 }
             }
 
@@ -200,14 +234,19 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
 
     private void prohibitButtons(int type){
         mRootView.findViewById(R.id.policy_detail_can_vote_frame).setVisibility(View.GONE);
-        mNoButton.setVisibility(View.VISIBLE);
+        mCannotButton.setVisibility(View.VISIBLE);
         if (type == 0){
-            mNoButton.setText(getResources().getString(R.string.policy_detail_other_party_button));
-            mNoButton.setClickable(false);
+            mCannotButton.setText(getResources().getString(R.string.policy_detail_other_party_button));
+            mCannotButton.setClickable(false);
         } else if (type == 1){
-            mNoButton.setText(getResources().getString(R.string.policy_detail_already_voted_button));
+            mCannotButton.setText(getResources().getString(R.string.policy_detail_already_voted_button));
+            mCannotButton.setClickable(true);
         } else if (type == 2){
-            mNoButton.setText(getResources().getString(R.string.policy_detail_guest_button));
+            mCannotButton.setText(getResources().getString(R.string.policy_detail_guest_button));
+            mCannotButton.setClickable(false);
+        } else if (type == 3){
+            mCannotButton.setText(getResources().getString(R.string.policy_detail_vote_self));
+            mCannotButton.setClickable(false);
         }
     }
 
@@ -256,6 +295,10 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
                             public void onClick(DialogInterface dialog, int i) {
                                 dialog.dismiss();
                                 incrementVote(neutralIncrement, "neutral");
+                                mRootView.findViewById(R.id.policy_detail_can_vote_frame).setVisibility(View.VISIBLE);
+                                mCannotButton.setVisibility(View.GONE);
+                                mRemovedVote = true;
+                                updateUserPoints();
                             }
                         });
                 alertDialog.show();
@@ -266,5 +309,84 @@ public class PolicyDetailFragment extends DialogFragment implements View.OnClick
 
             }
         });
+    }
+
+    private void updateSwapRatings(int increment){
+        final List<String> tempSwaps = new ArrayList<>();
+        final double incrementDouble = increment;
+
+        FirebaseDatabase.getInstance().getReference("SwapsByPolicy").child(FragmentArgs.POLICY_LONG_ID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                            String thisKey = snap.getKey();
+                            tempSwaps.add(thisKey);
+                        }
+                        for (final String key : tempSwaps){
+                            FirebaseDatabase.getInstance().getReference("Swaps").child(key)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Swap swap = dataSnapshot.getValue(Swap.class);
+                                    swap.setPolicyAvgNet(swap.getPolicyAvgNet() + incrementDouble/2);
+                                    double avgNet = ((double)swap.getDemNetVotes() + swap.getRepNetVotes())/2;
+                                    double previousRating = swap.getRating();
+                                    swap.setRating(Math.min(avgNet*2, avgNet + Math.round(Math.pow(swap.getPolicyAvgNet(), 2.0/3)*10/10)));
+                                    dataSnapshot.getRef().setValue(swap);
+
+                                    final double ratingDifference = swap.getRating() - previousRating;
+                                    FirebaseDatabase.getInstance().getReference("UserInfo").orderByChild("username")
+                                            .equalTo(swap.getCreator()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                                UserInfo info = snap.getValue(UserInfo.class);
+                                                info.setSwapCreatedPoints(info.getSwapCreatedPoints()+ratingDifference);
+                                                info.setOverallPoints(info.getOverallPoints() + ratingDifference);
+                                                snap.getRef().setValue(info);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void updateUserPoints(){
+        if (!mAlreadyVoted){
+            MainActivity.USER_VOTE_POINTS += 1;
+            FirebaseDatabase.getInstance().getReference("UserInfo/" + MainActivity.USER_ID)
+                    .child("votePoints").setValue(MainActivity.USER_VOTE_POINTS);
+            MainActivity.USER_OVERALL_POINTS += 1;
+            FirebaseDatabase.getInstance().getReference("UserInfo/" + MainActivity.USER_ID)
+                    .child("overallPoints").setValue(MainActivity.USER_OVERALL_POINTS);
+        } else if (mRemovedVote){
+            mAlreadyVoted = false;
+            mRemovedVote = false;
+            MainActivity.USER_VOTE_POINTS -= 1;
+            FirebaseDatabase.getInstance().getReference("UserInfo/" + MainActivity.USER_ID)
+                    .child("votePoints").setValue(MainActivity.USER_VOTE_POINTS);
+            MainActivity.USER_OVERALL_POINTS -= 1;
+            FirebaseDatabase.getInstance().getReference("UserInfo/" + MainActivity.USER_ID)
+                    .child("overallPoints").setValue(MainActivity.USER_OVERALL_POINTS);
+        }
     }
 }

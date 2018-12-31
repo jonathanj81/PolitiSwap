@@ -1,7 +1,6 @@
 package com.example.jon.politiswap.UiAdapters;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jon.politiswap.DataUtils.Policy;
-import com.example.jon.politiswap.DataUtils.Recent.RecentBills;
-import com.example.jon.politiswap.DialogFragments.BillDialogFragment;
-import com.example.jon.politiswap.DialogFragments.CreatePolicyFragment;
 import com.example.jon.politiswap.DialogFragments.FragmentArgs;
 import com.example.jon.politiswap.DialogFragments.PolicyDetailFragment;
 import com.example.jon.politiswap.MainActivity;
@@ -33,14 +29,17 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
     private Context mContext;
     private int mModifier = 0;
     private int mType = 0;
+    private OnBottomReachedListener onBottomReachedListener;
 
     private static final String POLICY_FRAGMENT_NAME = "policy_frag";
 
-    public PolicyAdapter(){
+    public PolicyAdapter(OnBottomReachedListener onBottomReachedListener){
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
-    public PolicyAdapter(int type){
+    public PolicyAdapter(int type, OnBottomReachedListener onBottomReachedListener){
         mType = type;
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
     @NonNull
@@ -65,6 +64,8 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
                 }
             });
         } else {
+            holder.mContainer.setVisibility(View.VISIBLE);
+            holder.mRefreshButton.setVisibility(View.GONE);
             final Policy policy = mPolicies.get(i-mModifier);
             String subjects = policy.getSubjects().toString();
             final String party = policy.getParty();
@@ -91,9 +92,13 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
 
             if (MainActivity.mUserCreated.contains(policy.getLongID())) {
                 holder.mCreatedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_document_svg_black));
+            } else {
+                holder.mCreatedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_document_svg_gray));
             }
             if (MainActivity.mUserVoted.contains(policy.getLongID())) {
                 holder.mVotedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_check_box_black));
+            } else {
+                holder.mVotedIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_check_box_gray));
             }
 
             holder.mContainer.setOnClickListener(new View.OnClickListener() {
@@ -112,12 +117,17 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
                         FragmentArgs.POLICY_DETAIL_SUMMARY = holder.mSummaryView.getText().toString();
                         FragmentArgs.POLICY_LONG_ID = policy.getLongID();
 
+                        FragmentArgs.MAIN_RECYCLER_STATE = ((MainActivity) v.getContext()).getRecyclerView().getLayoutManager().onSaveInstanceState();
                         FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();
                         PolicyDetailFragment frag = PolicyDetailFragment.newInstance(null);
                         frag.show(fm, POLICY_FRAGMENT_NAME);
                     }
                 }
             });
+
+            if (i == mPolicies.size()-1 && !MainActivity.isAtEnd){
+                onBottomReachedListener.onBottomReached();
+            }
         }
     }
 
@@ -128,9 +138,25 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
         return mPolicies.size();
     }
 
-    public void setPolicies(List<Policy> policies) {
-        mPolicies = policies;
-        mModifier = 0;
+    public void setPolicies(List<Policy> policies, boolean fromScroll) {
+        if (mType == 0) {
+            MainActivity.isAtEnd = policies.size() < 20;
+        }
+
+        if (fromScroll && policies.size() > 0) {
+            policies.remove(0);
+            mPolicies.addAll(policies);
+        } else {
+            mPolicies = policies;
+        }
+
+        if (MainActivity.mAdapterNeeded != 5) {
+            mModifier = 0;
+        }
+        if (policies.size() > 0) {
+            MainActivity.mLastFirebaseNode = mPolicies.get(mPolicies.size() - 1).getLongID();
+        }
+
         notifyDataSetChanged();
     }
 

@@ -7,6 +7,7 @@ public class Swap {
     private String demPolicyID;
     private String repPolicyID;
     private String partyOnTop;
+    private String longID;
     private double rating;
     private int demNetVotes;
     private int repNetVotes;
@@ -15,12 +16,13 @@ public class Swap {
     public Swap(){}
 
     public Swap(String creator, String timestamp, String demPolicyID, String repPolicyID, String partyOnTop,
-                double rating, int demNetVotes, int repNetVotes, double policyAvgNet){
+                String longID, double rating, int demNetVotes, int repNetVotes, double policyAvgNet){
         this.creator = creator;
         this.timestamp = timestamp;
         this.demPolicyID = demPolicyID;
         this.repPolicyID = repPolicyID;
         this.partyOnTop = partyOnTop;
+        this.longID = longID;
         this.rating = rating;
         this.demNetVotes = demNetVotes;
         this.repNetVotes = repNetVotes;
@@ -88,5 +90,13 @@ public class Swap {
 
     public void setPartyOnTop(String partyOnTop) {
         this.partyOnTop = partyOnTop;
+    }
+
+    public String getLongID() {
+        return longID;
+    }
+
+    public void setLongID(String longID) {
+        this.longID = longID;
     }
 }

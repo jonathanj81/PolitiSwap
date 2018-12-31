@@ -12,14 +12,16 @@ public class SearchedBillsAsync extends AsyncTask<Void, Void, SearchedBills> {
     private String mQuery;
     private SearchedBillsHandler mHandler;
     private String queueIdentifier;
+    private int mOffset;
 
     public interface SearchedBillsHandler {
         void searchedBillsCallback(SearchedBills results);
     }
 
-    public SearchedBillsAsync(SearchedBillsHandler handler, String query) {
+    public SearchedBillsAsync(SearchedBillsHandler handler, String query, int offset) {
         mQuery = query;
         mHandler = handler;
+        mOffset = offset;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class SearchedBillsAsync extends AsyncTask<Void, Void, SearchedBills> {
 
     @Override
     protected SearchedBills doInBackground(Void... voids) {
-        return RetrofitLegislationFetcher.getSearchedBills(mQuery);
+        return RetrofitLegislationFetcher.getSearchedBills(mQuery, mOffset);
     }
 
     @Override

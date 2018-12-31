@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import com.example.jon.politiswap.MainActivity;
 import com.example.jon.politiswap.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -28,17 +26,22 @@ import java.util.List;
 public class LegislationAdapter extends RecyclerView.Adapter<LegislationAdapter.LegislationViewHolder> {
 
     private List<Bill> mBills = new ArrayList<>();
-    private List<com.example.jon.politiswap.DataUtils.Searched.Bill> mSearchedBils = new ArrayList<>();
+    private List<com.example.jon.politiswap.DataUtils.Searched.Bill> mSearchedBills = new ArrayList<>();
     private Context mContext;
     private int mType;
 
+    private OnBottomReachedListener onBottomReachedListener;
+
     private static final String BILL_FRAGMENT_NAME = "bill_frag";
 
-    public LegislationAdapter(int type){
+    public LegislationAdapter(int type, OnBottomReachedListener onBottomReachedListener){
         mType = type;
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
-    public LegislationAdapter(){}
+    public LegislationAdapter(OnBottomReachedListener onBottomReachedListener){
+        this.onBottomReachedListener = onBottomReachedListener;
+    }
 
     @NonNull
     @Override
@@ -71,8 +74,12 @@ public class LegislationAdapter extends RecyclerView.Adapter<LegislationAdapter.
             sponsor = bill.getSponsorName();
             summary = bill.getSummary();
             link = bill.getGovtrackUrl();
+
+            if (i == mBills.size()-1){
+                onBottomReachedListener.onBottomReached();
+            }
         } else {
-            com.example.jon.politiswap.DataUtils.Searched.Bill bill = mSearchedBils.get(i);
+            com.example.jon.politiswap.DataUtils.Searched.Bill bill = mSearchedBills.get(i);
             slug = bill.getNumber();
             date = bill.getIntroducedDate();
             subject = bill.getPrimarySubject();
@@ -82,6 +89,10 @@ public class LegislationAdapter extends RecyclerView.Adapter<LegislationAdapter.
             sponsor = bill.getSponsorName();
             summary = bill.getSummary();
             link = bill.getGovtrackUrl();
+
+            if (i == mSearchedBills.size()-1){
+                onBottomReachedListener.onBottomReached();
+            }
         }
 
         holder.titleText.setText(title);
@@ -119,19 +130,19 @@ public class LegislationAdapter extends RecyclerView.Adapter<LegislationAdapter.
         if (mType == 0){
             return mBills == null ? 0 : mBills.size();
         } else {
-            return mSearchedBils == null ? 0 : mSearchedBils.size();
+            return mSearchedBills == null ? 0 : mSearchedBills.size();
         }
     }
 
     public void setBills(RecentBills recentBills, SearchedBills searchedBills) {
-        mBills.clear();
-        mSearchedBils.clear();
         if (mType == 0) {
+            mSearchedBills.clear();
             mBills.addAll(recentBills.getResults().get(0).getBills());
         } else {
-            mSearchedBils.addAll(searchedBills.getResults().get(0).getBills());
+            mBills.clear();
+            mSearchedBills.addAll(searchedBills.getResults().get(0).getBills());
         }
-        Collections.sort(mSearchedBils,new BillComparator());
+        Collections.sort(mSearchedBills,new BillComparator());
         notifyDataSetChanged();
     }
 
