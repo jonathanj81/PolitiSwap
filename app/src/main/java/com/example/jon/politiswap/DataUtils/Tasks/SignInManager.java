@@ -1,6 +1,8 @@
 package com.example.jon.politiswap.DataUtils.Tasks;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -32,13 +34,10 @@ public class SignInManager {
 
     public SignInManager(MainActivity activity){
         mActivity = activity;
-        Log.i("HGHGHGHGHGHG", "sign in manager created");
     }
 
     public void ManageSignIn(){
         mFirebaseAuth = FirebaseAuth.getInstance();
-
-        Log.i("HGHGHGHGHGHG", "manage sign in called");
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override

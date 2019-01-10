@@ -8,6 +8,9 @@
     <string name="test_ad_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="test_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
 
+    <string name="widget_policy_header">New Policies today!</string>
+    <string name="widget_swap_header">New Swaps today!</string>
+
     <string name="tab_swaps">Swaps</string>
     <string name="tab_policies">Policies</string>
     <string name="tab_activity">My Activity</string>
@@ -111,7 +114,7 @@
     <string name="change_policy_vote_message">Your current vote is %1$s the policy.  Would you like to switch it?</string>
 
     <string name="source_propublica" translatable="false">Source: ProPublica</string>
-    <string name="search_propublica" >Search Congressional Database</string>
+    <string name="search_propublica">Search Congressional Database</string>
 
     <string name="craft_swap_dem_button">Select a Democratic policy</string>
     <string name="craft_swap_rep_button">Select a Republican policy</string>
@@ -155,4 +158,13 @@
     <string name="user_score_swap_creation">Your points from created swaps: %1$s</string>
     <string name="user_score_policy_creation">Your points from created policies: %1$s</string>
     <string name="user_score_votes">Your points from votes: %1$s</string>
+
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="widget_title">My PolitiSwap</string>
+    <string name="widget_score_overall">Total Score: %1$s</string>
+    <string name="widget_score_swap_creation">Swaps: %1$s</string>
+    <string name="widget_score_policy_creation">Policies: %1$s</string>
+    <string name="widget_score_votes">Votes: %1$s</string>
+    <string name="widget_no_account_message">Please create an account to get widget updates.</string>
 </resources>

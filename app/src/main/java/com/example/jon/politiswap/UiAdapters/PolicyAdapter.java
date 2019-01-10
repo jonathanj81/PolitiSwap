@@ -18,6 +18,8 @@ import com.example.jon.politiswap.DialogFragments.FragmentArgs;
 import com.example.jon.politiswap.DialogFragments.PolicyDetailFragment;
 import com.example.jon.politiswap.MainActivity;
 import com.example.jon.politiswap.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,15 +31,18 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
     private Context mContext;
     private int mModifier = 0;
     private int mType = 0;
+    private int mPreviousAdPosition = 0;
     private OnBottomReachedListener onBottomReachedListener;
 
     private static final String POLICY_FRAGMENT_NAME = "policy_frag";
+    private static final int CONTENT_VIEW = 0;
+    private static final int AD_VIEW = 1;
 
-    public PolicyAdapter(OnBottomReachedListener onBottomReachedListener){
+    public PolicyAdapter(OnBottomReachedListener onBottomReachedListener) {
         this.onBottomReachedListener = onBottomReachedListener;
     }
 
-    public PolicyAdapter(int type, OnBottomReachedListener onBottomReachedListener){
+    public PolicyAdapter(int type, OnBottomReachedListener onBottomReachedListener) {
         mType = type;
         this.onBottomReachedListener = onBottomReachedListener;
     }
@@ -46,14 +51,14 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
     @Override
     public PolicyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         mContext = viewGroup.getContext();
+        View layoutView = LayoutInflater.from(mContext).inflate(R.layout.policy_layout_card_view, viewGroup, false);
 
-        View layoutView = LayoutInflater.from(mContext).inflate(R.layout.policy_layout_card_view, viewGroup,false);
         return new PolicyViewHolder(layoutView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final PolicyViewHolder holder, int i) {
-        if (i == 0 && MainActivity.mAdapterNeeded == 5){
+        if (i == 0 && MainActivity.mAdapterNeeded == 5) {
             mModifier = 1;
             holder.mContainer.setVisibility(View.GONE);
             holder.mRefreshButton.setVisibility(View.VISIBLE);
@@ -66,7 +71,7 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
         } else {
             holder.mContainer.setVisibility(View.VISIBLE);
             holder.mRefreshButton.setVisibility(View.GONE);
-            final Policy policy = mPolicies.get(i-mModifier);
+            final Policy policy = mPolicies.get(i - mModifier);
             String subjects = policy.getSubjects().toString();
             final String party = policy.getParty();
             final int wanted = policy.getNetWanted();
@@ -105,7 +110,7 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
                 @Override
                 public void onClick(View v) {
 
-                    if (mType == 1){
+                    if (mType == 1) {
                         MainActivity.mSwapFrag.refreshPolicyViews(policy);
                     } else {
                         FragmentArgs.POLICY_DETAIL_NET_WANTED = wanted;
@@ -124,18 +129,18 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
                     }
                 }
             });
-
-            if (i == mPolicies.size()-1 && !MainActivity.isAtEnd){
-                onBottomReachedListener.onBottomReached();
-            }
+        }
+        if (i == getItemCount() - 1 && !MainActivity.isAtEnd) {
+            onBottomReachedListener.onBottomReached();
         }
     }
 
     @Override
     public int getItemCount() {
-        if (null == mPolicies) return 0;
-        if (MainActivity.mAdapterNeeded == 5) return (mPolicies.size() + 1);
-        return mPolicies.size();
+        if (null == mPolicies || mPolicies.size() == 0) return 0;
+        int numItems = mPolicies.size();
+        if (MainActivity.mAdapterNeeded == 5) return (numItems + 1);
+        return numItems;
     }
 
     public void setPolicies(List<Policy> policies, boolean fromScroll) {
@@ -148,11 +153,9 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
             mPolicies.addAll(policies);
         } else {
             mPolicies = policies;
-        }
-
-        if (MainActivity.mAdapterNeeded != 5) {
             mModifier = 0;
         }
+
         if (policies.size() > 0) {
             MainActivity.mLastFirebaseNode = mPolicies.get(mPolicies.size() - 1).getLongID();
         }
@@ -160,7 +163,7 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
         notifyDataSetChanged();
     }
 
-    public class PolicyViewHolder extends RecyclerView.ViewHolder{
+    public class PolicyViewHolder extends RecyclerView.ViewHolder {
 
         final TextView mCreatorView;
         final TextView mTitleView;

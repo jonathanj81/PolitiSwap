@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -76,6 +78,9 @@
                 android:background="@color/colorPrimary"
                 app:layout_collapseMode="parallax"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:tabMaxWidth="0dp"
+                app:tabGravity="fill"
+                app:tabMode="fixed"
                 app:tabPaddingEnd="0dp"
                 app:tabPaddingStart="0dp">
 
@@ -119,7 +124,7 @@
         android:id="@+id/content_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="58dp"
         android:background="@android:color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -130,6 +135,7 @@
         android:background="@android:color/white"
         android:fillViewport="true"
         android:visibility="gone"
+        android:layout_marginBottom="42dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -148,6 +154,7 @@
         android:background="@android:color/white"
         android:fillViewport="true"
         android:visibility="gone"
+        android:layout_marginBottom="42dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -165,6 +172,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:visibility="gone"
+        android:layout_marginBottom="42dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -172,7 +180,7 @@
             layout="@layout/no_network_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="16dp"/>
+            android:layout_margin="16dp" />
 
     </android.support.v4.widget.NestedScrollView>
 
@@ -183,6 +191,7 @@
         android:background="@android:color/white"
         android:fillViewport="true"
         android:visibility="gone"
+        android:layout_marginBottom="42dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -208,7 +217,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginEnd="8dp"
         android:background="@color/raised_button_darker_red"
         android:src="@drawable/ic_add_24dp" />
 
@@ -217,8 +227,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:gravity="center_horizontal"
         android:background="@android:color/white"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"/>
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="50dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@color/colorPrimaryDarkFull"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/test_ad_id" />
 
 </android.support.design.widget.CoordinatorLayout>

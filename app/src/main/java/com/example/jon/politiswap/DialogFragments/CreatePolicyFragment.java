@@ -26,6 +26,7 @@ import com.example.jon.politiswap.DataUtils.Tasks.FirebaseRetrievalCalls;
 import com.example.jon.politiswap.MainActivity;
 import com.example.jon.politiswap.R;
 import com.example.jon.politiswap.UiAdapters.CreateSubjectAvailableAdapter;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -373,6 +374,10 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         MainActivity.USER_OVERALL_POINTS += 5;
         mDatabaseReference.child("overallPoints").setValue(MainActivity.USER_OVERALL_POINTS);
         mDatabaseReference.child("policyCreatedPoints").setValue(MainActivity.USER_POLICY_POINTS);
+
+        Bundle logParams = new Bundle();
+        logParams.putString("User", MainActivity.USERNAME);
+        FirebaseAnalytics.getInstance(getActivity()).logEvent("policyCreated", logParams);
 
         if (MainActivity.mAdapterNeeded == 3){
             new FirebaseRetrievalCalls((MainActivity)getActivity(), false).getTopPolicies();

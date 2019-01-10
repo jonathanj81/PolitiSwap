@@ -246,7 +246,7 @@ public class FirebaseRetrievalCalls {
                                             tempIDs.add(swapID);
                                         }
                                         MainActivity.mUserSwapVoted.addAll(tempIDs);
-                                        MainActivity.mTopTabManager.setTopTabs();
+                                        //MainActivity.mTopTabManager.setTopTabs(0);
                                     }
 
                                     @Override
@@ -456,4 +456,46 @@ public class FirebaseRetrievalCalls {
             }
         });
     }
+
+    /*public void getNewSwapsForWidget(){
+        final List<Swap> tempSwaps = new ArrayList<>();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        Query query = mFirebaseDatabase.getReference("Swaps").limitToLast(5);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    Swap thisSwap = snap.getValue(Swap.class);
+                    tempSwaps.add(0, thisSwap);
+                }
+                mRetriever.newSwapsSent(tempSwaps, mFromScroll);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void getNewPoliciesForWidget(){
+        final List<Policy> tempPolicies = new ArrayList<>();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        Query query = mFirebaseDatabase.getReference("Policies").limitToLast(5);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    Policy thisPolicy = snap.getValue(Policy.class);
+                    tempPolicies.add(0, thisPolicy);
+                }
+                mRetriever.newPoliciesSent(tempPolicies, mFromScroll);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }*/
 }

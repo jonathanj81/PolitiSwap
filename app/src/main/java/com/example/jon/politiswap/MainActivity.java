@@ -4,11 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +20,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.jon.politiswap.TabManagement.BottomTabManager;
 import com.example.jon.politiswap.UiAdapters.OnBottomReachedListener;
 import com.example.jon.politiswap.DataUtils.Policy;
 import com.example.jon.politiswap.DataUtils.Recent.RecentBills;
@@ -40,9 +47,19 @@ import com.example.jon.politiswap.UiAdapters.LegislationAdapter;
 import com.example.jon.politiswap.UiAdapters.PolicyAdapter;
 import com.example.jon.politiswap.UiAdapters.SwapsAdapter;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
 
 public class MainActivity extends AppCompatActivity implements BillResultsAsync.BillHandler,
         FirebaseRetrievalCalls.RetrieveFirebase, SearchedBillsAsync.SearchedBillsHandler, OnBottomReachedListener {
@@ -56,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     private SwapsAdapter mSwapsAdapter;
     private PolicyAdapter mPolicyAdapter;
     private boolean mAlreadyPaging = false;
+    private boolean isLand;
     public static int mBillOffset = 0;
     private BroadcastReceiver mNetworkReceiver;
 
@@ -64,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
 
     private static final String CREATE_POLICY_FRAGMENT_NAME = "policy_frag";
     private static final String CREATE_SWAP_FRAGMENT_NAME = "swap_frag";
+    private static final String ADAPTER_STATE = "adapter_state";
+    private static final String RECYCLER_STATE  = "recycler_state";
 
     public static boolean IS_GUEST;
     public static String USERNAME;
@@ -90,11 +110,19 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     public static double mLastSwapNetWanted = Integer.MAX_VALUE;
     public static int mLastSwapNetOffset = 0;
     public static String mCurrentAreaSubject;
+    public static String mResult;
+
+    private static final String PREFS_WIDGET_KEY = "user_id_widget_memory";
+    private static final String USER_ID_KEY = "user_id_widget_key";
+
+    private FirebaseFunctions mFunctions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         setToolbarLayout();
         prepAdapters();
@@ -102,10 +130,37 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
         prepFab();
 
         mTopTabManager = new TopTabManager(this);
-        mTopTabManager.setTopTabs();
 
         mSignInManager = new SignInManager(this);
         mSignInManager.ManageSignIn();
+
+        if (savedInstanceState != null){
+            mAdapterNeeded = savedInstanceState.getInt(ADAPTER_STATE);
+            recyclerViewState = savedInstanceState.getParcelable(RECYCLER_STATE);
+
+            mTopTabManager.setTopTabs(mAdapterNeeded / 3, mAdapterNeeded % 3);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        } else {
+            mTopTabManager.setTopTabs(0, 0);
+        }
+
+        if (isLand){
+            ((TextView)findViewById(R.id.user_mini_overall_score_view))
+                    .setText(String.format(getResources().getString(R.string.user_score_overall),String.valueOf(USER_OVERALL_POINTS)));
+            ((TextView)findViewById(R.id.user_mini_swaps_points_view))
+                    .setText(String.format(getResources().getString(R.string.user_score_swap_creation),String.valueOf(USER_SWAP_POINTS)));
+            ((TextView)findViewById(R.id.user_mini_policies_points_view))
+                    .setText(String.format(getResources().getString(R.string.user_score_policy_creation),String.valueOf(USER_POLICY_POINTS)));
+            ((TextView)findViewById(R.id.user_mini_votes_points_view))
+                    .setText(String.format(getResources().getString(R.string.user_score_votes),String.valueOf(USER_VOTE_POINTS)));
+        }
+
+        SharedPreferences prefs = getSharedPreferences(PREFS_WIDGET_KEY, Context.MODE_PRIVATE);
+        if (MainActivity.USER_ID != null && MainActivity.USER_ID.length() > 0) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(USER_ID_KEY, MainActivity.USER_ID);
+            editor.apply();
+        }
 
         mNetworkReceiver = new BroadcastReceiver() {
             @Override
@@ -116,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
                         if (isConnected) {
                             mRecyclerView.setVisibility(View.VISIBLE);
                             findViewById(R.id.alt_no_network_layout).setVisibility(View.GONE);
-                            mTopTabManager.setTopTabs();
+                            //mTopTabManager.setTopTabs(0);
                         } else {
                             mRecyclerView.setVisibility(View.GONE);
                             findViewById(R.id.alt_no_network_layout).setVisibility(View.VISIBLE);
@@ -125,6 +180,19 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
                 }).execute();
             }
         };
+
+        mFunctions = FirebaseFunctions.getInstance();
+        mFunctions.getHttpsCallable("findPub").call("nothing").addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                mResult = task.getResult().getData().toString();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                mResult = "";
+            }
+        });
 
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -141,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     protected void onResume() {
         super.onResume();
         mSignInManager.addListener();
+        ((AdView)findViewById(R.id.adView)).loadAd(new AdRequest.Builder().build());
     }
 
     @Override
@@ -158,8 +227,6 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_faq:
-                break;
             case R.id.action_signout:
                 AuthUI.getInstance().signOut(this);
                 ASKED_ABOUT_EMAIL = false;
@@ -189,9 +256,18 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                int bottomMarginCollapsed = (int) (56 * (getResources().getDisplayMetrics().density));
-                int leftMargin = (int) (72 * (getResources().getDisplayMetrics().density));
-                int bottomMarginExpanded = (int) (112 * (getResources().getDisplayMetrics().density));
+                int bottomMarginCollapsed;
+                int leftMargin;
+                int bottomMarginExpanded;
+                if(isLand) {
+                    bottomMarginCollapsed = (int) (48 * (getResources().getDisplayMetrics().density));
+                    leftMargin = (int) (64 * (getResources().getDisplayMetrics().density));
+                    bottomMarginExpanded = (int) (96 * (getResources().getDisplayMetrics().density));
+                } else {
+                    bottomMarginCollapsed = (int) (56 * (getResources().getDisplayMetrics().density));
+                    leftMargin = (int) (72 * (getResources().getDisplayMetrics().density));
+                    bottomMarginExpanded = (int) (112 * (getResources().getDisplayMetrics().density));
+                }
                 verticalOffset = Math.abs(verticalOffset);
 
                 ViewGroup.MarginLayoutParams textParams = (ViewGroup.MarginLayoutParams) titleTextView.getLayoutParams();
@@ -418,5 +494,12 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
                 break;
 
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(ADAPTER_STATE, mAdapterNeeded);
+        outState.putParcelable(RECYCLER_STATE, mRecyclerView.getLayoutManager().onSaveInstanceState());
+        super.onSaveInstanceState(outState);
     }
 }

@@ -12,6 +12,7 @@
     <color name="darkGray">#757575</color>
     <color name="colorLightAccent">#FFA3A3</color>
     <color name="colorPrimaryFull">#B4BEE5</color>
+    <color name="colorPrimaryDarkFull">#031EA3</color>
     <color name="colorAccentFull">#FF9D9D</color>
 
     <color name="raised_button_darker_blue">#3F5094</color>

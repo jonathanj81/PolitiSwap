@@ -29,6 +29,7 @@ import com.example.jon.politiswap.MainActivity;
 import com.example.jon.politiswap.R;
 import com.example.jon.politiswap.UiAdapters.CreateSubjectAvailableAdapter;
 import com.example.jon.politiswap.UiAdapters.PolicyAdapter;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -437,6 +438,10 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
                     MainActivity.USER_OVERALL_POINTS += 5;
                     mDatabaseReference.child("overallPoints").setValue(MainActivity.USER_OVERALL_POINTS);
                     mDatabaseReference.child("swapCreatedPoints").setValue(MainActivity.USER_SWAP_POINTS);
+
+                    Bundle logParams = new Bundle();
+                    logParams.putString("User", MainActivity.USERNAME);
+                    FirebaseAnalytics.getInstance(getActivity()).logEvent("swapCreated", logParams);
 
                     dismiss();
 

@@ -11,7 +11,6 @@ public class ConnectionAsyncTask extends AsyncTask<Void,Void,Boolean> {
 
     public ConnectionAsyncTask(InternetCheckListener listener) {
         this.listener = listener;
-        Log.i("HGHGHGHGHGHG", "Connection async created");
     }
 
     public interface InternetCheckListener {

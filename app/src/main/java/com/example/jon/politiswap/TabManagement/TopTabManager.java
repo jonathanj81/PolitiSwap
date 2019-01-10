@@ -22,7 +22,7 @@ public class TopTabManager implements TabLayout.OnTabSelectedListener {
         mBottomManager = new BottomTabManager(mActivity);
     }
 
-    public void setTopTabs() {
+    public void setTopTabs(int startAt, int startBottomAt) {
         TabLayout topTab = mActivity.findViewById(R.id.top_tab_layout);
         ((TextView) topTab.getTabAt(0).getCustomView().findViewById(R.id.tab_item_text_view))
                 .setText(mActivity.getResources().getString(R.string.tab_swaps));
@@ -33,12 +33,27 @@ public class TopTabManager implements TabLayout.OnTabSelectedListener {
         ((TextView) topTab.getTabAt(3).getCustomView().findViewById(R.id.tab_item_text_view))
                 .setText(mActivity.getResources().getString(R.string.tab_legislation));
 
-        topTab.getTabAt(0).select();
+        topTab.getTabAt(startAt).select();
 
-        topTab.getTabAt(0).getCustomView().findViewById(R.id.tab_item_text_view)
+        topTab.getTabAt(startAt).getCustomView().findViewById(R.id.tab_item_text_view)
                 .setBackground(mActivity.getResources().getDrawable(R.drawable.tab_item_background_selected));
 
-        mBottomManager.setBottomForSwaps();
+        switch (startAt){
+            case 0:
+                mBottomManager.setBottomForSwaps(startBottomAt);
+                break;
+            case 1:
+                mBottomManager.setBottomForPolicies(startBottomAt);
+                break;
+            case 2:
+                mBottomManager.setBottomForMyActivity(startBottomAt);
+                break;
+            case 3:
+                mBottomManager.setBottomForLegislation(startBottomAt);
+                mActivity.findViewById(R.id.included_three_tab_layout).setVisibility(View.GONE);
+                mActivity.findViewById(R.id.included_two_tab_layout).setVisibility(View.VISIBLE);
+                break;
+        }
         topTab.clearOnTabSelectedListeners();
         topTab.addOnTabSelectedListener(this);
     }
@@ -63,19 +78,19 @@ public class TopTabManager implements TabLayout.OnTabSelectedListener {
 
         switch (pos) {
             case 0:
-                mBottomManager.setBottomForSwaps();
+                mBottomManager.setBottomForSwaps(0);
                 mActivity.findViewById(R.id.fab).setVisibility(View.VISIBLE);
                 break;
             case 1:
-                mBottomManager.setBottomForPolicies();
+                mBottomManager.setBottomForPolicies(0);
                 mActivity.findViewById(R.id.fab).setVisibility(View.VISIBLE);
                 break;
             case 2:
-                mBottomManager.setBottomForMyActivity();
+                mBottomManager.setBottomForMyActivity(0);
                 mActivity.findViewById(R.id.fab).setVisibility(View.GONE);
                 break;
             case 3:
-                mBottomManager.setBottomForLegislation();
+                mBottomManager.setBottomForLegislation(0);
                 mActivity.findViewById(R.id.fab).setVisibility(View.GONE);
                 break;
             default:

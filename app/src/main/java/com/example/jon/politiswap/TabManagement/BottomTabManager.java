@@ -43,7 +43,7 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
         mTabListeners = new TabListeners(mActivity);
     }
 
-    void setBottomForSwaps() {
+    public void setBottomForSwaps(int startAt) {
         resetTabs();
         setBottomTabStrings(mActivity.getResources().getString(R.string.bottom_swaps_rated),
                 mActivity.getResources().getString(R.string.bottom_swaps_new),
@@ -51,9 +51,10 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
 
         mTabSelectedListener = mTabListeners.getSwapsTabListener();
         mThreeTabs.addOnTabSelectedListener(mTabSelectedListener);
+        mThreeTabs.getTabAt(startAt).select();
     }
 
-    void setBottomForPolicies() {
+    public void setBottomForPolicies(int startAt) {
         resetTabs();
         setBottomTabStrings(mActivity.getResources().getString(R.string.bottom_policies_wanted),
                 mActivity.getResources().getString(R.string.bottom_policies_new),
@@ -61,9 +62,10 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
 
         mTabSelectedListener = mTabListeners.getPolicyTabListener();
         mThreeTabs.addOnTabSelectedListener(mTabSelectedListener);
+        mThreeTabs.getTabAt(startAt).select();
     }
 
-    void setBottomForMyActivity() {
+    public void setBottomForMyActivity(int startAt) {
         resetTabs();
         setBottomTabStrings(mActivity.getResources().getString(R.string.bottom_activity_swaps),
                 mActivity.getResources().getString(R.string.bottom_activity_policies),
@@ -71,15 +73,17 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
 
         mTabSelectedListener = mTabListeners.getActivityTabListener();
         mThreeTabs.addOnTabSelectedListener(mTabSelectedListener);
+        mThreeTabs.getTabAt(startAt).select();
     }
 
-    void setBottomForLegislation() {
+    public void setBottomForLegislation(int startAt) {
         resetTabs();
         setBottomTabStrings(mActivity.getResources().getString(R.string.bottom_legislation_recent),
                 mActivity.getResources().getString(R.string.bottom_legislation_search));
 
         mTabSelectedListener = mTabListeners.getLegislationTabListener();
         mTwoTabs.addOnTabSelectedListener(mTabSelectedListener);
+        mTwoTabs.getTabAt(startAt).select();
     }
 
     public void getSearchScreen() {
@@ -161,5 +165,9 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
             ((TextView) mTwoTabs.getTabAt(1).getCustomView().findViewById(R.id.tab_item_text_view))
                     .setText(args[1]);
         }
+    }
+
+    public TabLayout.OnTabSelectedListener getTabListener(){
+        return mTabSelectedListener;
     }
 }

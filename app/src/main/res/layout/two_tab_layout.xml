@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.TabLayout
-    android:id="@+id/two_tab_layout"
+    android:id="@+id/three_tab_layout"
     android:layout_width="match_parent"
     android:layout_height="?android:actionBarSize"
     android:background="@color/colorPrimary"
     android:layout_gravity="bottom"
     app:layout_collapseMode="pin"
+    app:tabMaxWidth="0dp"
+    app:tabGravity="fill"
+    app:tabMode="fixed"
     app:tabPaddingStart="0dp"
     app:tabPaddingEnd="0dp"
     xmlns:android="http://schemas.android.com/apk/res/android"

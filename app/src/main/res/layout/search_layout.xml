@@ -43,7 +43,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:imeOptions="actionSearch"
-            android:inputType="textImeMultiLine"
+            android:inputType="textFilter"
             android:lines="1"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"

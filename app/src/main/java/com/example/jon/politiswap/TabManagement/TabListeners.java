@@ -172,12 +172,14 @@ public class TabListeners {
                     MainActivity.mAdapterNeeded = 6;
                     mActivity.getRecyclerView().setVisibility(View.VISIBLE);
                     mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
+                    mActivity.findViewById(R.id.alt_score_layout).setVisibility(View.GONE);
                     new FirebaseRetrievalCalls(mActivity, false).getUserSwaps();
                     break;
                 case 1:
                     MainActivity.mAdapterNeeded = 7;
                     mActivity.getRecyclerView().setVisibility(View.VISIBLE);
                     mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
+                    mActivity.findViewById(R.id.alt_score_layout).setVisibility(View.GONE);
                     new FirebaseRetrievalCalls(mActivity, false).getUserPolicies();
                     break;
                 case 2:
@@ -243,6 +245,8 @@ public class TabListeners {
                     break;
                 case 1:
                     MainActivity.mAdapterNeeded = 10;
+                    mActivity.findViewById(R.id.adView).setVisibility(View.GONE);
+                    mActivity.findViewById(R.id.user_id_view).setVisibility(View.GONE);
                     setUpForSearch();
                     break;
                 default:
@@ -259,6 +263,11 @@ public class TabListeners {
             mActivity.findViewById(R.id.alt_search_legislation_layout).setVisibility(View.GONE);
             ((InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(mActivity.getRecyclerView().getWindowToken(), 0);
+
+            if (tab.getPosition() == 1){
+                mActivity.findViewById(R.id.adView).setVisibility(View.VISIBLE);
+                mActivity.findViewById(R.id.user_id_view).setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
@@ -292,6 +301,8 @@ public class TabListeners {
                     ((ContentLoadingProgressBar)mActivity.findViewById(R.id.refreshing_bills_progress_bar)).show();
                     ((InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE))
                             .hideSoftInputFromWindow(queryView.getWindowToken(), 0);
+                    mActivity.findViewById(R.id.adView).setVisibility(View.VISIBLE);
+                    mActivity.findViewById(R.id.user_id_view).setVisibility(View.VISIBLE);
                     return true;
                 }
                 return false;

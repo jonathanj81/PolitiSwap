@@ -1,7 +1,9 @@
 package com.example.jon.politiswap.DataUtils.RetrofitClasses;
 
+import com.example.jon.politiswap.BuildConfig;
 import com.example.jon.politiswap.DataUtils.Recent.RecentBills;
 import com.example.jon.politiswap.DataUtils.Searched.SearchedBills;
+import com.example.jon.politiswap.MainActivity;
 
 import java.io.IOException;
 
@@ -28,7 +30,7 @@ public class RetrofitLegislationFetcher {
 
         LegislationClient client = retrofit.create(LegislationClient.class);
 
-        Call<SearchedBills> call = client.getSearchedResultsFromJson(query, "date", offset);
+        Call<SearchedBills> call = client.getSearchedResultsFromJson(MainActivity.mResult, query, "date", offset);
 
         try {
             return call.execute().body();
@@ -51,7 +53,7 @@ public class RetrofitLegislationFetcher {
 
         LegislationClient client = retrofit.create(LegislationClient.class);
 
-        Call<RecentBills> call = client.getRecentResultsFromJson(offset);
+        Call<RecentBills> call = client.getRecentResultsFromJson(MainActivity.mResult, offset);
 
         try {
             return call.execute().body();
