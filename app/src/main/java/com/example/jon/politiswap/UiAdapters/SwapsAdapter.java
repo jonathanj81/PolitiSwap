@@ -173,6 +173,10 @@ public class SwapsAdapter extends RecyclerView.Adapter<SwapsAdapter.SwapsViewHol
         notifyDataSetChanged();
     }
 
+    public List<Swap> getSwaps(){
+        return mSwaps;
+    }
+
     public class SwapsViewHolder extends RecyclerView.ViewHolder {
 
         final TextView mProposedByView;

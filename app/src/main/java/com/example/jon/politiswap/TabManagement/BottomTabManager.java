@@ -5,19 +5,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.example.jon.politiswap.DataUtils.Tasks.BillResultsAsync;
 import com.example.jon.politiswap.DataUtils.Tasks.FirebaseRetrievalCalls;
 import com.example.jon.politiswap.MainActivity;
 import com.example.jon.politiswap.R;
 import com.example.jon.politiswap.UiAdapters.CreateSubjectAvailableAdapter;
-import com.example.jon.politiswap.UiAdapters.SwapsAdapter;
 
 public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectChangeManager {
 
@@ -43,47 +37,55 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
         mTabListeners = new TabListeners(mActivity);
     }
 
-    public void setBottomForSwaps(int startAt) {
+    public void setBottomForSwaps(int startAt, boolean fromInstance) {
         resetTabs();
         setBottomTabStrings(mActivity.getResources().getString(R.string.bottom_swaps_rated),
                 mActivity.getResources().getString(R.string.bottom_swaps_new),
                 mActivity.getResources().getString(R.string.bottom_swaps_search));
 
-        mTabSelectedListener = mTabListeners.getSwapsTabListener();
+        mActivity.findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        mTabSelectedListener = mTabListeners.getSwapsTabListener(fromInstance);
         mThreeTabs.addOnTabSelectedListener(mTabSelectedListener);
         mThreeTabs.getTabAt(startAt).select();
+        mTabListeners.setInstance(false);
     }
 
-    public void setBottomForPolicies(int startAt) {
+    public void setBottomForPolicies(int startAt, boolean fromInstance) {
         resetTabs();
         setBottomTabStrings(mActivity.getResources().getString(R.string.bottom_policies_wanted),
                 mActivity.getResources().getString(R.string.bottom_policies_new),
                 mActivity.getResources().getString(R.string.bottom_policies_search));
 
-        mTabSelectedListener = mTabListeners.getPolicyTabListener();
+        mActivity.findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        mTabSelectedListener = mTabListeners.getPolicyTabListener(fromInstance);
         mThreeTabs.addOnTabSelectedListener(mTabSelectedListener);
         mThreeTabs.getTabAt(startAt).select();
+        mTabListeners.setInstance(false);
     }
 
-    public void setBottomForMyActivity(int startAt) {
+    public void setBottomForMyActivity(int startAt, boolean fromInstance) {
         resetTabs();
         setBottomTabStrings(mActivity.getResources().getString(R.string.bottom_activity_swaps),
                 mActivity.getResources().getString(R.string.bottom_activity_policies),
                 mActivity.getResources().getString(R.string.bottom_activity_score));
 
-        mTabSelectedListener = mTabListeners.getActivityTabListener();
+        mActivity.findViewById(R.id.fab).setVisibility(View.GONE);
+        mTabSelectedListener = mTabListeners.getActivityTabListener(fromInstance);
         mThreeTabs.addOnTabSelectedListener(mTabSelectedListener);
         mThreeTabs.getTabAt(startAt).select();
+        mTabListeners.setInstance(false);
     }
 
-    public void setBottomForLegislation(int startAt) {
+    public void setBottomForLegislation(int startAt, boolean fromInstance) {
         resetTabs();
         setBottomTabStrings(mActivity.getResources().getString(R.string.bottom_legislation_recent),
                 mActivity.getResources().getString(R.string.bottom_legislation_search));
 
-        mTabSelectedListener = mTabListeners.getLegislationTabListener();
+        mActivity.findViewById(R.id.fab).setVisibility(View.GONE);
+        mTabSelectedListener = mTabListeners.getLegislationTabListener(fromInstance);
         mTwoTabs.addOnTabSelectedListener(mTabSelectedListener);
         mTwoTabs.getTabAt(startAt).select();
+        mTabListeners.setInstance(false);
     }
 
     public void getSearchScreen() {
@@ -131,6 +133,8 @@ public class BottomTabManager implements CreateSubjectAvailableAdapter.SubjectCh
         mMainContentRecyclerView.setVisibility(View.VISIBLE);
         mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
         mActivity.findViewById(R.id.alt_score_layout).setVisibility(View.GONE);
+        mActivity.findViewById(R.id.adView).setVisibility(View.VISIBLE);
+        mActivity.findViewById(R.id.user_id_view).setVisibility(View.VISIBLE);
         if (MainActivity.mAdapterNeeded == 10) {
             mActivity.findViewById(R.id.alt_search_legislation_layout).setVisibility(View.GONE);
             ((InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE))

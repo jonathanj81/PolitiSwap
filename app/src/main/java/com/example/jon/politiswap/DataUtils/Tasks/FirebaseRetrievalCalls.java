@@ -127,10 +127,7 @@ public class FirebaseRetrievalCalls {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         Query query = mFirebaseDatabase.getReference("Subjects/" + area + "/byPolicy").limitToLast(20);
         if (mFromScroll){
-            //Log.i("HGHGHGHGHG", "policy search called from scroll");
             query = query.orderByKey().endAt(MainActivity.mLastFirebaseNode);
-        } else {
-            //Log.i("HGHGHGHGHG", "policy search called without scroll");
         }
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -139,12 +136,10 @@ public class FirebaseRetrievalCalls {
                     String policyID = snap.getValue(String.class);
                     tempIDs.add(0,policyID);
                 }
-                //Log.i("HGHGHGHGHG", tempIDs.toString());
                 if (tempIDs.size() == 0){
                     mRetriever.newPoliciesSent(tempPolicies, mFromScroll);
                 } else if (queueIdentifier.equals(MainActivity.mTaskWithPriority)) {
                     for (String id : tempIDs) {
-                        //Log.i("HGHGHGHGHG", id);
                         mFirebaseDatabase.getReference("Policies").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -456,46 +451,4 @@ public class FirebaseRetrievalCalls {
             }
         });
     }
-
-    /*public void getNewSwapsForWidget(){
-        final List<Swap> tempSwaps = new ArrayList<>();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        Query query = mFirebaseDatabase.getReference("Swaps").limitToLast(5);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    Swap thisSwap = snap.getValue(Swap.class);
-                    tempSwaps.add(0, thisSwap);
-                }
-                mRetriever.newSwapsSent(tempSwaps, mFromScroll);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
-
-    public void getNewPoliciesForWidget(){
-        final List<Policy> tempPolicies = new ArrayList<>();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        Query query = mFirebaseDatabase.getReference("Policies").limitToLast(5);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    Policy thisPolicy = snap.getValue(Policy.class);
-                    tempPolicies.add(0, thisPolicy);
-                }
-                mRetriever.newPoliciesSent(tempPolicies, mFromScroll);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }*/
 }

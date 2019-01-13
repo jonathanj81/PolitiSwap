@@ -20,22 +20,27 @@ public class TabListeners {
 
     private MainActivity mActivity;
     private ContentLoadingProgressBar mProgressBar;
+    private boolean mFromInstance;
 
     public TabListeners(MainActivity activity){
         mActivity = activity;
         mProgressBar = mActivity.findViewById(R.id.refreshing_bills_progress_bar);
     }
 
-    public PolicyTabListener getPolicyTabListener(){
+    public PolicyTabListener getPolicyTabListener(boolean fromInstance){
+        mFromInstance = fromInstance;
         return new PolicyTabListener();
     }
-    public SwapsTabListener getSwapsTabListener(){
+    public SwapsTabListener getSwapsTabListener(boolean fromInstance){
+        mFromInstance = fromInstance;
         return new SwapsTabListener();
     }
-    public ActivityTabListener getActivityTabListener(){
+    public ActivityTabListener getActivityTabListener(boolean fromInstance){
+        mFromInstance = fromInstance;
         return new ActivityTabListener();
     }
-    public LegislationTabListener getLegislationTabListener(){
+    public LegislationTabListener getLegislationTabListener(boolean fromInstance){
+        mFromInstance = fromInstance;
         return new LegislationTabListener();
     }
 
@@ -50,7 +55,9 @@ public class TabListeners {
             MainActivity.mLastFirebaseNode = "";
             MainActivity.mBillOffset = 0;
             MainActivity.mAdapterNeeded = 3;
-            new FirebaseRetrievalCalls(mActivity, false).getTopPolicies();
+            if (!mFromInstance) {
+                new FirebaseRetrievalCalls(mActivity, false).getTopPolicies();
+            }
         }
 
         @Override
@@ -64,17 +71,28 @@ public class TabListeners {
                     MainActivity.mAdapterNeeded = 3;
                     mActivity.getRecyclerView().setVisibility(View.VISIBLE);
                     mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
-                    new FirebaseRetrievalCalls(mActivity, false).getTopPolicies();
+                    if (!mFromInstance) {
+                        new FirebaseRetrievalCalls(mActivity, false).getTopPolicies();
+                    } else {
+                        mFromInstance = false;
+                    }
                     break;
                 case 1:
                     MainActivity.mAdapterNeeded = 4;
                     mActivity.getRecyclerView().setVisibility(View.VISIBLE);
                     mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
-                    new FirebaseRetrievalCalls(mActivity, false).getNewPolicies();
+                    if (!mFromInstance) {
+                        new FirebaseRetrievalCalls(mActivity, false).getNewPolicies();
+                    } else {
+                        mFromInstance = false;
+                    }
                     break;
                 case 2:
                     MainActivity.mAdapterNeeded = 5;
                     MainActivity.mTopTabManager.getBottomTabManager().getSearchScreen();
+                    if (mFromInstance){
+                        mFromInstance = false;
+                    }
                     break;
                 default:
                     break;
@@ -104,7 +122,9 @@ public class TabListeners {
             MainActivity.mLastFirebaseNode = "";
             MainActivity.mBillOffset = 0;
             MainActivity.mAdapterNeeded = 0;
-            new FirebaseRetrievalCalls(mActivity, false).getTopSwaps();
+            if (!mFromInstance) {
+                new FirebaseRetrievalCalls(mActivity, false).getTopSwaps();
+            }
         }
 
         @Override
@@ -118,17 +138,28 @@ public class TabListeners {
                     MainActivity.mAdapterNeeded = 0;
                     mActivity.getRecyclerView().setVisibility(View.VISIBLE);
                     mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
-                    new FirebaseRetrievalCalls(mActivity, false).getTopSwaps();
+                    if (!mFromInstance) {
+                        new FirebaseRetrievalCalls(mActivity, false).getTopSwaps();
+                    } else {
+                        mFromInstance = false;
+                    }
                     break;
                 case 1:
                     MainActivity.mAdapterNeeded = 1;
                     mActivity.getRecyclerView().setVisibility(View.VISIBLE);
                     mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
-                    new FirebaseRetrievalCalls(mActivity, false).getNewSwaps();
+                    if (!mFromInstance) {
+                        new FirebaseRetrievalCalls(mActivity, false).getNewSwaps();
+                    } else {
+                        mFromInstance = false;
+                    }
                     break;
                 case 2:
                     MainActivity.mAdapterNeeded = 2;
                     MainActivity.mTopTabManager.getBottomTabManager().getSearchScreen();
+                    if (mFromInstance){
+                        mFromInstance = false;
+                    }
                     break;
                 default:
                     break;
@@ -158,7 +189,9 @@ public class TabListeners {
             MainActivity.mLastFirebaseNode = "";
             MainActivity.mBillOffset = 0;
             MainActivity.mAdapterNeeded = 6;
-            new FirebaseRetrievalCalls(mActivity, false).getUserSwaps();
+            if (!mFromInstance) {
+                new FirebaseRetrievalCalls(mActivity, false).getUserSwaps();
+            }
         }
 
         @Override
@@ -173,19 +206,30 @@ public class TabListeners {
                     mActivity.getRecyclerView().setVisibility(View.VISIBLE);
                     mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
                     mActivity.findViewById(R.id.alt_score_layout).setVisibility(View.GONE);
-                    new FirebaseRetrievalCalls(mActivity, false).getUserSwaps();
+                    if (!mFromInstance) {
+                        new FirebaseRetrievalCalls(mActivity, false).getUserSwaps();
+                    } else {
+                        mFromInstance = false;
+                    }
                     break;
                 case 1:
                     MainActivity.mAdapterNeeded = 7;
                     mActivity.getRecyclerView().setVisibility(View.VISIBLE);
                     mActivity.findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
                     mActivity.findViewById(R.id.alt_score_layout).setVisibility(View.GONE);
-                    new FirebaseRetrievalCalls(mActivity, false).getUserPolicies();
+                    if (!mFromInstance) {
+                        new FirebaseRetrievalCalls(mActivity, false).getUserPolicies();
+                    } else {
+                        mFromInstance = false;
+                    }
                     break;
                 case 2:
                     MainActivity.mAdapterNeeded = 8;
                     mProgressBar.hide();
                     showScores();
+                    if (mFromInstance){
+                        mFromInstance = false;
+                    }
                     break;
                 default:
                     break;
@@ -229,7 +273,9 @@ public class TabListeners {
             mProgressBar.show();
             MainActivity.mLastFirebaseNode = "";
             MainActivity.mAdapterNeeded = 9;
-            new BillResultsAsync(mActivity, 0).execute();
+            if (!mFromInstance) {
+                new BillResultsAsync(mActivity, 0).execute();
+            }
         }
 
         @Override
@@ -241,13 +287,21 @@ public class TabListeners {
                 case 0:
                     mProgressBar.show();
                     MainActivity.mAdapterNeeded = 9;
-                    new BillResultsAsync(mActivity, 0).execute();
+                    if (!mFromInstance) {
+                        new BillResultsAsync(mActivity, 0).execute();
+                    } else {
+                        mFromInstance = false;
+                    }
                     break;
                 case 1:
                     MainActivity.mAdapterNeeded = 10;
                     mActivity.findViewById(R.id.adView).setVisibility(View.GONE);
                     mActivity.findViewById(R.id.user_id_view).setVisibility(View.GONE);
-                    setUpForSearch();
+                    if (!mFromInstance) {
+                        setUpForSearch();
+                    } else {
+                        mFromInstance = false;
+                    }
                     break;
                 default:
                     break;
@@ -308,5 +362,9 @@ public class TabListeners {
                 return false;
             }
         });
+    }
+
+    public void setInstance(boolean currentInstance){
+        mFromInstance = currentInstance;
     }
 }

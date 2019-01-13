@@ -1,11 +1,15 @@
 
 package com.example.jon.politiswap.DataUtils.Recent;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Bill {
+public class Bill implements Parcelable {
 
     @SerializedName("bill_id")
     @Expose
@@ -371,4 +375,97 @@ public class Bill {
         this.latestMajorAction = latestMajorAction;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.billId);
+        dest.writeString(this.billSlug);
+        dest.writeString(this.billType);
+        dest.writeString(this.number);
+        dest.writeString(this.billUri);
+        dest.writeString(this.title);
+        dest.writeString(this.shortTitle);
+        dest.writeString(this.sponsorTitle);
+        dest.writeString(this.sponsorId);
+        dest.writeString(this.sponsorName);
+        dest.writeString(this.sponsorState);
+        dest.writeString(this.sponsorParty);
+        dest.writeString(this.sponsorUri);
+        dest.writeParcelable((Parcelable)this.gpoPdfUri, flags);
+        dest.writeString(this.congressdotgovUrl);
+        dest.writeString(this.govtrackUrl);
+        dest.writeString(this.introducedDate);
+        dest.writeValue(this.active);
+        dest.writeParcelable((Parcelable)this.lastVote, flags);
+        dest.writeParcelable((Parcelable)this.housePassage, flags);
+        dest.writeParcelable((Parcelable)this.senatePassage, flags);
+        dest.writeParcelable((Parcelable)this.enacted, flags);
+        dest.writeParcelable((Parcelable)this.vetoed, flags);
+        dest.writeValue(this.cosponsors);
+        dest.writeParcelable(this.cosponsorsByParty, flags);
+        dest.writeString(this.committees);
+        dest.writeStringList(this.committeeCodes);
+        dest.writeList(this.subcommitteeCodes);
+        dest.writeString(this.primarySubject);
+        dest.writeString(this.summary);
+        dest.writeString(this.summaryShort);
+        dest.writeString(this.latestMajorActionDate);
+        dest.writeString(this.latestMajorAction);
+    }
+
+    public Bill() {
+    }
+
+    protected Bill(Parcel in) {
+        this.billId = in.readString();
+        this.billSlug = in.readString();
+        this.billType = in.readString();
+        this.number = in.readString();
+        this.billUri = in.readString();
+        this.title = in.readString();
+        this.shortTitle = in.readString();
+        this.sponsorTitle = in.readString();
+        this.sponsorId = in.readString();
+        this.sponsorName = in.readString();
+        this.sponsorState = in.readString();
+        this.sponsorParty = in.readString();
+        this.sponsorUri = in.readString();
+        this.gpoPdfUri = in.readParcelable(Object.class.getClassLoader());
+        this.congressdotgovUrl = in.readString();
+        this.govtrackUrl = in.readString();
+        this.introducedDate = in.readString();
+        this.active = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.lastVote = in.readParcelable(Object.class.getClassLoader());
+        this.housePassage = in.readParcelable(Object.class.getClassLoader());
+        this.senatePassage = in.readParcelable(Object.class.getClassLoader());
+        this.enacted = in.readParcelable(Object.class.getClassLoader());
+        this.vetoed = in.readParcelable(Object.class.getClassLoader());
+        this.cosponsors = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.cosponsorsByParty = in.readParcelable(CosponsorsByParty.class.getClassLoader());
+        this.committees = in.readString();
+        this.committeeCodes = in.createStringArrayList();
+        this.subcommitteeCodes = new ArrayList<Object>();
+        in.readList(this.subcommitteeCodes, Object.class.getClassLoader());
+        this.primarySubject = in.readString();
+        this.summary = in.readString();
+        this.summaryShort = in.readString();
+        this.latestMajorActionDate = in.readString();
+        this.latestMajorAction = in.readString();
+    }
+
+    public static final Parcelable.Creator<Bill> CREATOR = new Parcelable.Creator<Bill>() {
+        @Override
+        public Bill createFromParcel(Parcel source) {
+            return new Bill(source);
+        }
+
+        @Override
+        public Bill[] newArray(int size) {
+            return new Bill[size];
+        }
+    };
 }

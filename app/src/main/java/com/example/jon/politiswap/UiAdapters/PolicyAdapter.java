@@ -163,6 +163,10 @@ public class PolicyAdapter extends RecyclerView.Adapter<PolicyAdapter.PolicyView
         notifyDataSetChanged();
     }
 
+    public List<Policy> getPolicies(){
+        return mPolicies;
+    }
+
     public class PolicyViewHolder extends RecyclerView.ViewHolder {
 
         final TextView mCreatorView;

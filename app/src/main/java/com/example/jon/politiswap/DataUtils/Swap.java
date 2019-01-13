@@ -1,6 +1,9 @@
 package com.example.jon.politiswap.DataUtils;
 
-public class Swap {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Swap implements Parcelable {
 
     private String creator;
     private String timestamp;
@@ -99,4 +102,48 @@ public class Swap {
     public void setLongID(String longID) {
         this.longID = longID;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.creator);
+        dest.writeString(this.timestamp);
+        dest.writeString(this.demPolicyID);
+        dest.writeString(this.repPolicyID);
+        dest.writeString(this.partyOnTop);
+        dest.writeString(this.longID);
+        dest.writeDouble(this.rating);
+        dest.writeInt(this.demNetVotes);
+        dest.writeInt(this.repNetVotes);
+        dest.writeDouble(this.policyAvgNet);
+    }
+
+    protected Swap(Parcel in) {
+        this.creator = in.readString();
+        this.timestamp = in.readString();
+        this.demPolicyID = in.readString();
+        this.repPolicyID = in.readString();
+        this.partyOnTop = in.readString();
+        this.longID = in.readString();
+        this.rating = in.readDouble();
+        this.demNetVotes = in.readInt();
+        this.repNetVotes = in.readInt();
+        this.policyAvgNet = in.readDouble();
+    }
+
+    public static final Parcelable.Creator<Swap> CREATOR = new Parcelable.Creator<Swap>() {
+        @Override
+        public Swap createFromParcel(Parcel source) {
+            return new Swap(source);
+        }
+
+        @Override
+        public Swap[] newArray(int size) {
+            return new Swap[size];
+        }
+    };
 }

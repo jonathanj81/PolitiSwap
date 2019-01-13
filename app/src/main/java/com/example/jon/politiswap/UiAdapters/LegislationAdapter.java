@@ -148,6 +148,25 @@ public class LegislationAdapter extends RecyclerView.Adapter<LegislationAdapter.
         notifyDataSetChanged();
     }
 
+    public void setRefreshedRecentBills(List<Bill> bills){
+        mBills = bills;
+        notifyDataSetChanged();
+    }
+
+    public void setRefreshedSearchedBills(List<com.example.jon.politiswap.DataUtils.Searched.Bill> bills){
+        mSearchedBills = bills;
+        Collections.sort(mSearchedBills,new BillComparator());
+        notifyDataSetChanged();
+    }
+
+    public List<Bill> getRecentBills(){
+        return mBills;
+    }
+
+    public List<com.example.jon.politiswap.DataUtils.Searched.Bill> getSearchedBills(){
+        return mSearchedBills;
+    }
+
     public class LegislationViewHolder extends RecyclerView.ViewHolder{
 
         final TextView titleText;

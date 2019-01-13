@@ -1,10 +1,14 @@
 package com.example.jon.politiswap.DataUtils;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
-public class Policy {
+public class Policy implements Parcelable {
 
     private String creator;
     private int netWanted;
@@ -97,4 +101,44 @@ public class Policy {
                 .append(longID)
                 .toHashCode();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.creator);
+        dest.writeInt(this.netWanted);
+        dest.writeString(this.party);
+        dest.writeStringList(this.subjects);
+        dest.writeString(this.title);
+        dest.writeString(this.summary);
+        dest.writeString(this.timeStamp);
+        dest.writeString(this.longID);
+    }
+
+    protected Policy(Parcel in) {
+        this.creator = in.readString();
+        this.netWanted = in.readInt();
+        this.party = in.readString();
+        this.subjects = in.createStringArrayList();
+        this.title = in.readString();
+        this.summary = in.readString();
+        this.timeStamp = in.readString();
+        this.longID = in.readString();
+    }
+
+    public static final Parcelable.Creator<Policy> CREATOR = new Parcelable.Creator<Policy>() {
+        @Override
+        public Policy createFromParcel(Parcel source) {
+            return new Policy(source);
+        }
+
+        @Override
+        public Policy[] newArray(int size) {
+            return new Policy[size];
+        }
+    };
 }

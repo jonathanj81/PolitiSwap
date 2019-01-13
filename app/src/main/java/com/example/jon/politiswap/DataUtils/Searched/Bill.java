@@ -1,13 +1,15 @@
 
 package com.example.jon.politiswap.DataUtils.Searched;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Bill implements Comparable<Bill> {
+public class Bill implements Comparable<Bill>,Parcelable {
 
     @SerializedName("bill_id")
     @Expose
@@ -59,16 +61,16 @@ public class Bill implements Comparable<Bill> {
     private Boolean active;
     @SerializedName("house_passage")
     @Expose
-    private Object housePassage;
+    private String housePassage;
     @SerializedName("senate_passage")
     @Expose
-    private Object senatePassage;
+    private String senatePassage;
     @SerializedName("enacted")
     @Expose
-    private Object enacted;
+    private String enacted;
     @SerializedName("vetoed")
     @Expose
-    private Object vetoed;
+    private String vetoed;
     @SerializedName("cosponsors")
     @Expose
     private Integer cosponsors;
@@ -225,35 +227,35 @@ public class Bill implements Comparable<Bill> {
         this.active = active;
     }
 
-    public Object getHousePassage() {
+    public String getHousePassage() {
         return housePassage;
     }
 
-    public void setHousePassage(Object housePassage) {
+    public void setHousePassage(String housePassage) {
         this.housePassage = housePassage;
     }
 
-    public Object getSenatePassage() {
+    public String getSenatePassage() {
         return senatePassage;
     }
 
-    public void setSenatePassage(Object senatePassage) {
+    public void setSenatePassage(String senatePassage) {
         this.senatePassage = senatePassage;
     }
 
-    public Object getEnacted() {
+    public String getEnacted() {
         return enacted;
     }
 
-    public void setEnacted(Object enacted) {
+    public void setEnacted(String enacted) {
         this.enacted = enacted;
     }
 
-    public Object getVetoed() {
+    public String getVetoed() {
         return vetoed;
     }
 
-    public void setVetoed(Object vetoed) {
+    public void setVetoed(String vetoed) {
         this.vetoed = vetoed;
     }
 
@@ -333,4 +335,89 @@ public class Bill implements Comparable<Bill> {
     public int compareTo(@NonNull Bill bill) {
         return getIntroducedDate().compareTo(bill.getIntroducedDate());
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.billId);
+        dest.writeString(this.billType);
+        dest.writeString(this.number);
+        dest.writeString(this.billUri);
+        dest.writeString(this.title);
+        dest.writeString(this.sponsorTitle);
+        dest.writeString(this.sponsorId);
+        dest.writeString(this.sponsorName);
+        dest.writeString(this.sponsorState);
+        dest.writeString(this.sponsorParty);
+        dest.writeString(this.sponsorUri);
+        dest.writeString(this.gpoPdfUri);
+        dest.writeString(this.congressdotgovUrl);
+        dest.writeString(this.govtrackUrl);
+        dest.writeString(this.introducedDate);
+        dest.writeValue(this.active);
+        dest.writeString(this.housePassage);
+        dest.writeString(this.senatePassage);
+        dest.writeString(this.enacted);
+        dest.writeString(this.vetoed);
+        dest.writeValue(this.cosponsors);
+        dest.writeString(this.committees);
+        dest.writeStringList(this.committeeCodes);
+        dest.writeStringList(this.subcommitteeCodes);
+        dest.writeString(this.primarySubject);
+        dest.writeString(this.summary);
+        dest.writeString(this.summaryShort);
+        dest.writeString(this.latestMajorActionDate);
+        dest.writeString(this.latestMajorAction);
+    }
+
+    public Bill() {
+    }
+
+    protected Bill(Parcel in) {
+        this.billId = in.readString();
+        this.billType = in.readString();
+        this.number = in.readString();
+        this.billUri = in.readString();
+        this.title = in.readString();
+        this.sponsorTitle = in.readString();
+        this.sponsorId = in.readString();
+        this.sponsorName = in.readString();
+        this.sponsorState = in.readString();
+        this.sponsorParty = in.readString();
+        this.sponsorUri = in.readString();
+        this.gpoPdfUri = in.readString();
+        this.congressdotgovUrl = in.readString();
+        this.govtrackUrl = in.readString();
+        this.introducedDate = in.readString();
+        this.active = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.housePassage = in.readParcelable(Object.class.getClassLoader());
+        this.senatePassage = in.readParcelable(Object.class.getClassLoader());
+        this.enacted = in.readParcelable(Object.class.getClassLoader());
+        this.vetoed = in.readParcelable(Object.class.getClassLoader());
+        this.cosponsors = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.committees = in.readString();
+        this.committeeCodes = in.createStringArrayList();
+        this.subcommitteeCodes = in.createStringArrayList();
+        this.primarySubject = in.readString();
+        this.summary = in.readString();
+        this.summaryShort = in.readString();
+        this.latestMajorActionDate = in.readString();
+        this.latestMajorAction = in.readString();
+    }
+
+    public static final Parcelable.Creator<Bill> CREATOR = new Parcelable.Creator<Bill>() {
+        @Override
+        public Bill createFromParcel(Parcel source) {
+            return new Bill(source);
+        }
+
+        @Override
+        public Bill[] newArray(int size) {
+            return new Bill[size];
+        }
+    };
 }

@@ -20,8 +20,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.jon.politiswap.TabManagement.BottomTabManager;
+import com.example.jon.politiswap.DataUtils.Recent.Bill;
 import com.example.jon.politiswap.UiAdapters.OnBottomReachedListener;
 import com.example.jon.politiswap.DataUtils.Policy;
 import com.example.jon.politiswap.DataUtils.Recent.RecentBills;
@@ -49,7 +47,6 @@ import com.example.jon.politiswap.UiAdapters.SwapsAdapter;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -58,8 +55,6 @@ import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.security.auth.login.LoginException;
 
 public class MainActivity extends AppCompatActivity implements BillResultsAsync.BillHandler,
         FirebaseRetrievalCalls.RetrieveFirebase, SearchedBillsAsync.SearchedBillsHandler, OnBottomReachedListener {
@@ -84,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     private static final String CREATE_SWAP_FRAGMENT_NAME = "swap_frag";
     private static final String ADAPTER_STATE = "adapter_state";
     private static final String RECYCLER_STATE  = "recycler_state";
+    private static final String POLICIES_BEFORE_DESTROY = "policies_saved";
+    private static final String SWAPS_BEFORE_DESTROY  = "swaps_saved";
+    private static final String RECENT_BILLS_BEFORE_DESTROY  = "recent_bills_saved";
+    private static final String SEARCHED_BILLS_BEFORE_DESTROY  = "searched_bills_saved";
 
     public static boolean IS_GUEST;
     public static String USERNAME;
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     public static List<String> mUserVoted = new ArrayList<>();
     public static List<String> mUserSwapCreated = new ArrayList<>();
     public static List<String> mUserSwapVoted = new ArrayList<>();
-    public static int mAdapterNeeded = 0;
+    public static int mAdapterNeeded;
     public static TopTabManager mTopTabManager;
     public static CreateSwapFragment mSwapFrag;
     public static String mLegislationQuery = "";
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     public static double mLastSwapNetWanted = Integer.MAX_VALUE;
     public static int mLastSwapNetOffset = 0;
     public static String mCurrentAreaSubject;
-    public static String mResult;
+    public static String mResult = "";
 
     private static final String PREFS_WIDGET_KEY = "user_id_widget_memory";
     private static final String USER_ID_KEY = "user_id_widget_key";
@@ -138,10 +137,60 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
             mAdapterNeeded = savedInstanceState.getInt(ADAPTER_STATE);
             recyclerViewState = savedInstanceState.getParcelable(RECYCLER_STATE);
 
-            mTopTabManager.setTopTabs(mAdapterNeeded / 3, mAdapterNeeded % 3);
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            mTopTabManager.setTopTabs(mAdapterNeeded / 3, mAdapterNeeded % 3, true);
+            switch (mAdapterNeeded){
+                case 0:
+                    newSwapsSent(savedInstanceState.<Swap>getParcelableArrayList(SWAPS_BEFORE_DESTROY), false);
+                    break;
+                case 1:
+                    newSwapsSent(savedInstanceState.<Swap>getParcelableArrayList(SWAPS_BEFORE_DESTROY), false);
+                    break;
+                case 2:
+                    newSwapsSent(savedInstanceState.<Swap>getParcelableArrayList(SWAPS_BEFORE_DESTROY), false);
+                    break;
+                case 3:
+                    newPoliciesSent(savedInstanceState.<Policy>getParcelableArrayList(POLICIES_BEFORE_DESTROY), false);
+                    break;
+                case 4:
+                    newPoliciesSent(savedInstanceState.<Policy>getParcelableArrayList(POLICIES_BEFORE_DESTROY), false);
+                    break;
+                case 5:
+                    newPoliciesSent(savedInstanceState.<Policy>getParcelableArrayList(POLICIES_BEFORE_DESTROY), false);
+                    break;
+                case 6:
+                    newSwapsSent(savedInstanceState.<Swap>getParcelableArrayList(SWAPS_BEFORE_DESTROY), false);
+                    break;
+                case 7:
+                    newPoliciesSent(savedInstanceState.<Policy>getParcelableArrayList(POLICIES_BEFORE_DESTROY), false);
+                    break;
+                case 8:
+                    //skip
+                    break;
+                case 9:
+                    mLegislationAdapter.setRefreshedRecentBills(savedInstanceState.<Bill>getParcelableArrayList(RECENT_BILLS_BEFORE_DESTROY));
+                    mRecyclerView.setAdapter(mLegislationAdapter);
+                    if (recyclerViewState != null) {
+                        mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                        recyclerViewState = null;
+                    }
+                    break;
+                case 10:
+                    List<com.example.jon.politiswap.DataUtils.Searched.Bill> bills = savedInstanceState.getParcelableArrayList(SEARCHED_BILLS_BEFORE_DESTROY);
+                    if (bills != null && bills.size() > 0) {
+                        mLegislationAdapter = new LegislationAdapter(1,MainActivity.this);
+                        mLegislationAdapter.setRefreshedSearchedBills(bills);
+                        mRecyclerView.setAdapter(mLegislationAdapter);
+                        if (recyclerViewState != null) {
+                            mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                            recyclerViewState = null;
+                        }
+                    } else {
+                        ((TabLayout)findViewById(R.id.included_two_tab_layout)).getTabAt(1).select();
+                    }
+                    break;
+            }
         } else {
-            mTopTabManager.setTopTabs(0, 0);
+            mTopTabManager.setTopTabs(0, 0, false);
         }
 
         if (isLand){
@@ -171,7 +220,21 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
                         if (isConnected) {
                             mRecyclerView.setVisibility(View.VISIBLE);
                             findViewById(R.id.alt_no_network_layout).setVisibility(View.GONE);
-                            //mTopTabManager.setTopTabs(0);
+                            ((AdView)findViewById(R.id.adView)).loadAd(new AdRequest.Builder().build());
+                            if (mResult.isEmpty()) {
+                                mFunctions = FirebaseFunctions.getInstance();
+                                mFunctions.getHttpsCallable("findPub").call("nothing").addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                                        mResult = task.getResult().getData().toString();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        mResult = "";
+                                    }
+                                });
+                            }
                         } else {
                             mRecyclerView.setVisibility(View.GONE);
                             findViewById(R.id.alt_no_network_layout).setVisibility(View.VISIBLE);
@@ -181,22 +244,9 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
             }
         };
 
-        mFunctions = FirebaseFunctions.getInstance();
-        mFunctions.getHttpsCallable("findPub").call("nothing").addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                mResult = task.getResult().getData().toString();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                mResult = "";
-            }
-        });
-
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mNetworkReceiver, intentFilter);
+        this.registerReceiver(mNetworkReceiver, intentFilter);
     }
 
     @Override
@@ -209,7 +259,6 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     protected void onResume() {
         super.onResume();
         mSignInManager.addListener();
-        ((AdView)findViewById(R.id.adView)).loadAd(new AdRequest.Builder().build());
     }
 
     @Override
@@ -367,8 +416,9 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
         } else {
             mRecyclerView.setVisibility(View.VISIBLE);
             findViewById(R.id.alt_search_layout).setVisibility(View.GONE);
-            if (fromScroll) {
+            if (recyclerViewState != null) {
                 mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                recyclerViewState = null;
             }
             mPolicyAdapter.setPolicies(policies, fromScroll);
             mRecyclerView.setAdapter(mPolicyAdapter);
@@ -395,10 +445,9 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
             });
         } else {
             mRecyclerView.setVisibility(View.VISIBLE);
-            if (fromScroll) {
-                if (fromScroll) {
-                    mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-                }
+            if (recyclerViewState != null) {
+                mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                recyclerViewState = null;
             }
             mSwapsAdapter.setSwaps(swaps, fromScroll);
             mRecyclerView.setAdapter(mSwapsAdapter);
@@ -407,6 +456,9 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
 
     @Override
     public void searchedBillsCallback(SearchedBills results) {
+        if (findViewById(R.id.alt_no_network_layout).isShown()){
+            //runConnectionAsync();
+        }
         mRecyclerView.setVisibility(View.VISIBLE);
         findViewById(R.id.alt_search_legislation_layout).setVisibility(View.GONE);
         if (mLegislationAdapter.getType() != 1) {
@@ -497,9 +549,46 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(ADAPTER_STATE, mAdapterNeeded);
+    public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(RECYCLER_STATE, mRecyclerView.getLayoutManager().onSaveInstanceState());
+        ArrayList<Policy> policies = new ArrayList<>(mPolicyAdapter.getPolicies());
+        outState.putParcelableArrayList(POLICIES_BEFORE_DESTROY, policies);
+        switch (mAdapterNeeded){
+            case 0:
+                outState.putParcelableArrayList(SWAPS_BEFORE_DESTROY, new ArrayList<Parcelable>(mSwapsAdapter.getSwaps()));
+                break;
+            case 1:
+                outState.putParcelableArrayList(SWAPS_BEFORE_DESTROY, new ArrayList<Parcelable>(mSwapsAdapter.getSwaps()));
+                break;
+            case 2:
+                outState.putParcelableArrayList(SWAPS_BEFORE_DESTROY, new ArrayList<Parcelable>(mSwapsAdapter.getSwaps()));
+                break;
+            case 3:
+                outState.putParcelableArrayList(POLICIES_BEFORE_DESTROY, new ArrayList<Parcelable>(mPolicyAdapter.getPolicies()));
+                break;
+            case 4:
+                outState.putParcelableArrayList(POLICIES_BEFORE_DESTROY, new ArrayList<Parcelable>(mPolicyAdapter.getPolicies()));
+                break;
+            case 5:
+                outState.putParcelableArrayList(POLICIES_BEFORE_DESTROY, new ArrayList<Parcelable>(mPolicyAdapter.getPolicies()));
+                break;
+            case 6:
+                outState.putParcelableArrayList(SWAPS_BEFORE_DESTROY, new ArrayList<Parcelable>(mSwapsAdapter.getSwaps()));
+                break;
+            case 7:
+                outState.putParcelableArrayList(POLICIES_BEFORE_DESTROY, new ArrayList<Parcelable>(mPolicyAdapter.getPolicies()));
+                break;
+            case 8:
+                //skip
+                break;
+            case 9:
+                outState.putParcelableArrayList(RECENT_BILLS_BEFORE_DESTROY, new ArrayList<Parcelable>(mLegislationAdapter.getRecentBills()));
+                break;
+            case 10:
+                outState.putParcelableArrayList(SEARCHED_BILLS_BEFORE_DESTROY, new ArrayList<Parcelable>(mLegislationAdapter.getSearchedBills()));
+                break;
+        }
+        outState.putInt(ADAPTER_STATE, mAdapterNeeded);
         super.onSaveInstanceState(outState);
     }
 }
