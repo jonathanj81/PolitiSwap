@@ -1,7 +1,6 @@
 package com.example.jon.politiswap.DataUtils.Tasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.net.HttpURLConnection;
 import java.net.URL;

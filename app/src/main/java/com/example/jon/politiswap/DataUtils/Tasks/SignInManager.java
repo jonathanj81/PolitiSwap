@@ -1,11 +1,8 @@
 package com.example.jon.politiswap.DataUtils.Tasks;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +41,9 @@ public class SignInManager {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 mUser = firebaseAuth.getCurrentUser();
                 if (mUser != null){
+                    if (MainActivity.isFresh) {
+                        new FirebaseRetrievalCalls(mActivity, false).getTopSwaps();
+                    }
                     MainActivity.IS_GUEST = mUser.isAnonymous();
                     MainActivity.USER_ID = mUser.getUid();
                     if (!MainActivity.IS_GUEST){

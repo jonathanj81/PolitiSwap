@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/craft_policy_step_number_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/steps_3"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+        app:layout_constraintBottom_toTopOf="@id/craft_summary_title_text_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/craft_summary_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/craft_policy_summary_hint"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+        app:layout_constraintBottom_toTopOf="@id/craft_summary_edit_scroll_wrapper"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/craft_policy_step_number_3" />
+
+    <ScrollView
+        android:id="@+id/craft_summary_edit_scroll_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/craft_summary_title_text_view">
+
+        <EditText
+            android:id="@+id/craft_summary_edit_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@color/light_gray"
+            android:gravity="bottom"
+            android:maxLines="4"
+            android:hint="@string/craft_policy_summary_placeholder"
+            android:imeOptions="actionDone"
+            android:inputType="textAutoComplete|textMultiLine"
+            android:textColorHint="@color/raised_button_darker_red" />
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

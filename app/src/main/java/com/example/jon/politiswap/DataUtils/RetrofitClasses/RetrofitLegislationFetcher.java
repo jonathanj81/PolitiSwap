@@ -1,6 +1,5 @@
 package com.example.jon.politiswap.DataUtils.RetrofitClasses;
 
-import com.example.jon.politiswap.BuildConfig;
 import com.example.jon.politiswap.DataUtils.Recent.RecentBills;
 import com.example.jon.politiswap.DataUtils.Searched.SearchedBills;
 import com.example.jon.politiswap.MainActivity;
@@ -13,9 +12,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitLegislationFetcher {
-
-    private static SearchedBills searchedBills;
-    private static RecentBills recentBills;
 
     public static SearchedBills getSearchedBills(String query, int offset) {
 

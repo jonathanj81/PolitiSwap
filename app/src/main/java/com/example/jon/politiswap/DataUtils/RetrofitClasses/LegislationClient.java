@@ -1,15 +1,11 @@
 package com.example.jon.politiswap.DataUtils.RetrofitClasses;
 
-import com.example.jon.politiswap.BuildConfig;
 import com.example.jon.politiswap.DataUtils.Recent.RecentBills;
 import com.example.jon.politiswap.DataUtils.Searched.SearchedBills;
-import com.example.jon.politiswap.MainActivity;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface LegislationClient {

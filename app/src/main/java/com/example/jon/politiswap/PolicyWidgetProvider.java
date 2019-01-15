@@ -1,18 +1,12 @@
 package com.example.jon.politiswap;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.TextView;
-
-import com.example.jon.politiswap.DataUtils.Tasks.FirebaseRetrievalCalls;
 import com.example.jon.politiswap.DataUtils.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

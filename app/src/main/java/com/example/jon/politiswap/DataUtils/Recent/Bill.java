@@ -3,12 +3,14 @@ package com.example.jon.politiswap.DataUtils.Recent;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Keep
 public class Bill implements Parcelable {
 
     @SerializedName("bill_id")

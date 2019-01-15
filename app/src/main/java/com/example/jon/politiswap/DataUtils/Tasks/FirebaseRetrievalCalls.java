@@ -1,12 +1,10 @@
 package com.example.jon.politiswap.DataUtils.Tasks;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.jon.politiswap.DataUtils.Policy;
 import com.example.jon.politiswap.DataUtils.Swap;
 import com.example.jon.politiswap.MainActivity;
-import com.example.jon.politiswap.TabManagement.TopTabManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

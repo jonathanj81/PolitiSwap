@@ -1,10 +1,13 @@
 
 package com.example.jon.politiswap.DataUtils.Searched;
 
+import android.support.annotation.Keep;
+
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Keep
 public class Result {
 
     @SerializedName("num_results")

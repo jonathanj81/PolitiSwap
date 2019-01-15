@@ -1,5 +1,8 @@
 package com.example.jon.politiswap.DataUtils;
 
+import android.support.annotation.Keep;
+
+@Keep
 public class UserInfo {
 
     private String username;

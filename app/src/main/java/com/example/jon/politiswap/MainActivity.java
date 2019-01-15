@@ -13,6 +13,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -68,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     private SwapsAdapter mSwapsAdapter;
     private PolicyAdapter mPolicyAdapter;
     private boolean mAlreadyPaging = false;
-    private boolean isLand;
     public static int mBillOffset = 0;
     private BroadcastReceiver mNetworkReceiver;
 
@@ -77,12 +77,15 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
 
     private static final String CREATE_POLICY_FRAGMENT_NAME = "policy_frag";
     private static final String CREATE_SWAP_FRAGMENT_NAME = "swap_frag";
+    private static final String RETAINED_POLICY_FRAGMENT_NAME = "retained_policy_frag";
+    private static final String RETAINED_SWAP_FRAGMENT_NAME = "retained_swap_frag";
     private static final String ADAPTER_STATE = "adapter_state";
     private static final String RECYCLER_STATE  = "recycler_state";
     private static final String POLICIES_BEFORE_DESTROY = "policies_saved";
     private static final String SWAPS_BEFORE_DESTROY  = "swaps_saved";
     private static final String RECENT_BILLS_BEFORE_DESTROY  = "recent_bills_saved";
     private static final String SEARCHED_BILLS_BEFORE_DESTROY  = "searched_bills_saved";
+    private static final String CURRENT_SEARCH_AREA  = "current_search_area";
 
     public static boolean IS_GUEST;
     public static String USERNAME;
@@ -110,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
     public static int mLastSwapNetOffset = 0;
     public static String mCurrentAreaSubject;
     public static String mResult = "";
+    public static boolean isLand;
+    public static boolean isFresh;
 
     private static final String PREFS_WIDGET_KEY = "user_id_widget_memory";
     private static final String USER_ID_KEY = "user_id_widget_key";
@@ -130,12 +135,11 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
 
         mTopTabManager = new TopTabManager(this);
 
-        mSignInManager = new SignInManager(this);
-        mSignInManager.ManageSignIn();
-
         if (savedInstanceState != null){
+            isFresh = false;
             mAdapterNeeded = savedInstanceState.getInt(ADAPTER_STATE);
             recyclerViewState = savedInstanceState.getParcelable(RECYCLER_STATE);
+            mCurrentAreaSubject = savedInstanceState.getString(CURRENT_SEARCH_AREA);
 
             mTopTabManager.setTopTabs(mAdapterNeeded / 3, mAdapterNeeded % 3, true);
             switch (mAdapterNeeded){
@@ -189,9 +193,17 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
                     }
                     break;
             }
+
+            if (savedInstanceState.containsKey(RETAINED_SWAP_FRAGMENT_NAME)){
+                mSwapFrag = (CreateSwapFragment)getSupportFragmentManager().getFragment(savedInstanceState, RETAINED_SWAP_FRAGMENT_NAME);
+            }
         } else {
+            isFresh = true;
             mTopTabManager.setTopTabs(0, 0, false);
         }
+
+        mSignInManager = new SignInManager(this);
+        mSignInManager.ManageSignIn();
 
         if (isLand){
             ((TextView)findViewById(R.id.user_mini_overall_score_view))
@@ -589,6 +601,15 @@ public class MainActivity extends AppCompatActivity implements BillResultsAsync.
                 break;
         }
         outState.putInt(ADAPTER_STATE, mAdapterNeeded);
+        Fragment swapFrag = getSupportFragmentManager().findFragmentByTag(CREATE_SWAP_FRAGMENT_NAME);
+        if (swapFrag != null) {
+            getSupportFragmentManager().putFragment(outState, RETAINED_SWAP_FRAGMENT_NAME, swapFrag);
+        }
+        Fragment policyFrag = getSupportFragmentManager().findFragmentByTag(CREATE_POLICY_FRAGMENT_NAME);
+        if (policyFrag != null) {
+            getSupportFragmentManager().putFragment(outState, RETAINED_POLICY_FRAGMENT_NAME, policyFrag);
+        }
+        outState.putString(CURRENT_SEARCH_AREA, mCurrentAreaSubject);
         super.onSaveInstanceState(outState);
     }
 }

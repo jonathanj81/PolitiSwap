@@ -3,12 +3,14 @@ package com.example.jon.politiswap.DataUtils.Searched;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Keep
 public class Bill implements Comparable<Bill>,Parcelable {
 
     @SerializedName("bill_id")

@@ -30,6 +30,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CreatePolicyFragment extends DialogFragment implements CreateSubjectAvailableAdapter.SubjectChangeManager {
@@ -50,6 +51,10 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
     private String mParty = MainActivity.PARTY;
     private String mUsername = MainActivity.USERNAME;
     private String mUserId = MainActivity.USER_ID;
+    private static final String RETAINED_SUMMARY = "retained_summary";
+    private static final String RETAINED_TITLE = "retained_title";
+    private static final String RETAINED_SUBJECTS = "retained_subjects";
+    private static final String RETAINED_SCREEN_POSITION = "retained_screen_position";
 
     public CreatePolicyFragment() {
 
@@ -65,6 +70,26 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mCurrentPage = savedInstanceState.getInt(RETAINED_SCREEN_POSITION);
+
+            if (savedInstanceState.containsKey(RETAINED_SUBJECTS)){
+                mSubjects = savedInstanceState.getStringArrayList(RETAINED_SUBJECTS);
+                for (String subject : mSubjects) {
+                    addSubject(subject);
+                }
+            }
+            mTitle = savedInstanceState.getString(RETAINED_TITLE);
+            mSummary = savedInstanceState.getString(RETAINED_SUMMARY);
+            if (mCurrentPage == 1) {
+                setUpSecondScreen();
+            } else if (mCurrentPage == 2) {
+                setUpThirdScreen();
+            } else if (mCurrentPage == 3) {
+                setUpPreviewScreen();
+            }
+        }
     }
 
     @Nullable
@@ -92,6 +117,13 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putInt(RETAINED_SCREEN_POSITION, mCurrentPage);
+        outState.putString(RETAINED_TITLE, mTitle);
+        outState.putString(RETAINED_SUMMARY, mSummary);
+        mSubjects = mSubjectSelectedAdapter.getSelectedSubjects();
+        if (mSubjects != null && mSubjects.size() > 0) {
+            outState.putStringArrayList(RETAINED_SUBJECTS, new ArrayList<>(mSubjects));
+        }
     }
 
     @Override
@@ -107,7 +139,7 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
 
     private void prepAvailableRecycler() {
         mSubjectAvailableRecycler = mRootView.findViewById(R.id.craft_subject_available_recycler);
-        mSubjectAvailableAdapter = new CreateSubjectAvailableAdapter(this,0);
+        mSubjectAvailableAdapter = new CreateSubjectAvailableAdapter(this, 0);
         mSubjectAvailableAdapter.setAll();
         mSubjectAvailableRecycler.setHasFixedSize(false);
         mSubjectAvailableRecycler.setLayoutManager(new LinearLayoutManager(getActivity(),
@@ -115,13 +147,13 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         mSubjectAvailableRecycler.setAdapter(mSubjectAvailableAdapter);
     }
 
-    private void prepSelectedRecycler(){
+    private void prepSelectedRecycler() {
         mSubjectSelectedRecycler = mRootView.findViewById(R.id.craft_subject_selected_recycler);
-        mSubjectSelectedAdapter = new CreateSubjectAvailableAdapter(this,1);
+        mSubjectSelectedAdapter = new CreateSubjectAvailableAdapter(this, 1);
         mSubjectSelectedAdapter.setEmpty();
         mSubjectSelectedRecycler.setHasFixedSize(true);
         mSubjectSelectedRecycler.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL,false));
+                LinearLayoutManager.HORIZONTAL, false));
         mSubjectSelectedRecycler.setAdapter(mSubjectSelectedAdapter);
     }
 
@@ -131,37 +163,36 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                switch (mCurrentPage){
+                switch (mCurrentPage) {
                     case 0:
                         mSubjects = mSubjectSelectedAdapter.getSelectedSubjects();
-                        if (mSubjects.size() == 0){
-                            Toast.makeText(getActivity(),getResources().getString(R.string.step_1_policy_subject_empty_error),
+                        if (mSubjects.size() == 0) {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.step_1_policy_subject_empty_error),
                                     Toast.LENGTH_LONG).show();
                         } else {
-                            mCurrentPage ++;
+                            mCurrentPage++;
                             setUpSecondScreen();
                         }
                         break;
                     case 1:
-                        mTitle = ((EditText)mRootView.findViewById(R.id.craft_title_edit_view))
+                        mTitle = ((EditText) mRootView.findViewById(R.id.craft_title_edit_view))
                                 .getText().toString();
-                        if (mTitle.length() == 0){
-                            Toast.makeText(getActivity(),getResources().getString(R.string.step_2_policy_title_empty_error),
+                        if (mTitle.length() == 0) {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.step_2_policy_title_empty_error),
                                     Toast.LENGTH_LONG).show();
                         } else {
-                            mCurrentPage ++;
+                            mCurrentPage++;
                             setUpThirdScreen();
                         }
                         break;
                     case 2:
-                        mSummary = ((EditText)mRootView.findViewById(R.id.craft_summary_edit_view))
+                        mSummary = ((EditText) mRootView.findViewById(R.id.craft_summary_edit_view))
                                 .getText().toString();
-                        if (mSummary.length() == 0){
-                            Toast.makeText(getActivity(),getResources().getString(R.string.step_3_policy_summary_empty_error),
+                        if (mSummary.length() == 0) {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.step_3_policy_summary_empty_error),
                                     Toast.LENGTH_LONG).show();
                         } else {
-                            mCurrentPage ++;
+                            mCurrentPage++;
                             setUpPreviewScreen();
                         }
                         break;
@@ -175,26 +206,26 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         });
     }
 
-    private void prepBackButton(){
+    private void prepBackButton() {
         Button backButton = mRootView.findViewById(R.id.craft_policy_small_back);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (mCurrentPage){
+                switch (mCurrentPage) {
                     case 0:
                         closeWithWarning();
                         break;
                     case 1:
-                        mCurrentPage --;
+                        mCurrentPage--;
                         resetFirstScreen();
                         break;
                     case 2:
-                        mCurrentPage --;
+                        mCurrentPage--;
                         setUpSecondScreen();
                         break;
                     case 3:
-                        mCurrentPage --;
+                        mCurrentPage--;
                         setUpThirdScreen();
                         break;
                     default:
@@ -225,7 +256,7 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         mSubjectSelectedAdapter.PullSubject(subject);
         mSubjectAvailableAdapter.PushSubject(subject);
         int count = mSubjectSelectedAdapter.getItemCount();
-        if (count == 0){
+        if (count == 0) {
             mProceed = false;
             TextView numText = mRootView.findViewById(R.id.craft_subject_title_text_view);
             numText.setText(getResources().getString(R.string.craft_policy_subject_hint));
@@ -238,7 +269,7 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         }
     }
 
-    private void setSubjectCounter(int subjects){
+    private void setSubjectCounter(int subjects) {
         TextView numText = mRootView.findViewById(R.id.craft_subject_title_text_view);
         numText.setText("");
         numText.append(getResources().getString(R.string.craft_policy_subject_hint));
@@ -246,54 +277,57 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
                 String.valueOf(subjects)));
     }
 
-    private void resetFirstScreen(){
+    private void resetFirstScreen() {
         mRootView.findViewById(R.id.subject_entry_included_layout).setVisibility(View.VISIBLE);
         mRootView.findViewById(R.id.title_entry_included_layout).setVisibility(View.GONE);
-        ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
     }
 
-    private void setUpSecondScreen(){
+    private void setUpSecondScreen() {
         mRootView.findViewById(R.id.summary_entry_included_layout).setVisibility(View.GONE);
         mRootView.findViewById(R.id.subject_entry_included_layout).setVisibility(View.GONE);
         mRootView.findViewById(R.id.title_entry_included_layout).setVisibility(View.VISIBLE);
         mRootView.findViewById(R.id.craft_title_edit_view).requestFocus();
-        ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
-                .toggleSoftInput(InputMethodManager.SHOW_FORCED,InputMethodManager.HIDE_IMPLICIT_ONLY);
+        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                .toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
-    private void setUpThirdScreen(){
+    private void setUpThirdScreen() {
         mRootView.findViewById(R.id.policy_preview_included_layout).setVisibility(View.GONE);
         mRootView.findViewById(R.id.title_entry_included_layout).setVisibility(View.GONE);
+        mRootView.findViewById(R.id.subject_entry_included_layout).setVisibility(View.GONE);
         mRootView.findViewById(R.id.summary_entry_included_layout).setVisibility(View.VISIBLE);
         EditText editView = mRootView.findViewById(R.id.craft_summary_edit_view);
         editView.requestFocus();
-        ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
-                .toggleSoftInput(InputMethodManager.SHOW_FORCED,InputMethodManager.HIDE_IMPLICIT_ONLY);
+        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                .toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
-    private void setUpPreviewScreen(){
+    private void setUpPreviewScreen() {
         mRootView.findViewById(R.id.summary_entry_included_layout).setVisibility(View.GONE);
+        mRootView.findViewById(R.id.title_entry_included_layout).setVisibility(View.GONE);
+        mRootView.findViewById(R.id.subject_entry_included_layout).setVisibility(View.GONE);
         mRootView.findViewById(R.id.policy_preview_included_layout).setVisibility(View.VISIBLE);
-        ((TextView)mRootView.findViewById(R.id.swap_first_summary_line)).setMaxLines(20);
-        ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+        ((TextView) mRootView.findViewById(R.id.swap_first_summary_line)).setMaxLines(20);
+        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
-        ((TextView)mRootView.findViewById(R.id.craft_policy_next))
+        ((TextView) mRootView.findViewById(R.id.craft_policy_next))
                 .setText(getResources().getString(R.string.craft_policy_save_and_publish));
         FrameLayout container = mRootView.findViewById(R.id.policy_preview_included_container);
-        if (mParty.equals("Democrat")){
+        if (mParty.equals("Democrat")) {
             container.setBackground(getResources().getDrawable(R.drawable.dem_swap_background));
         } else {
             container.setBackground(getResources().getDrawable(R.drawable.rep_swap_background));
         }
 
         String subjects = mSubjects.toString();
-        ((TextView)mRootView.findViewById(R.id.swap_first_subject_line))
-                .setText(subjects.substring(1,subjects.length()-1));
-        ((TextView)mRootView.findViewById(R.id.swap_first_title_line)).setText(mTitle);
-        ((TextView)mRootView.findViewById(R.id.swap_first_thumbs_up_count))
-                .setText(String.format(getResources().getString(R.string.policy_net_wanted),0, mParty));
-        ((TextView)mRootView.findViewById(R.id.swap_first_creator_name)).setText(mUsername);
+        ((TextView) mRootView.findViewById(R.id.swap_first_subject_line))
+                .setText(subjects.substring(1, subjects.length() - 1));
+        ((TextView) mRootView.findViewById(R.id.swap_first_title_line)).setText(mTitle);
+        ((TextView) mRootView.findViewById(R.id.swap_first_thumbs_up_count))
+                .setText(String.format(getResources().getString(R.string.policy_net_wanted), 0, mParty));
+        ((TextView) mRootView.findViewById(R.id.swap_first_creator_name)).setText(mUsername);
 
         TextView summary = mRootView.findViewById(R.id.swap_first_summary_line);
         summary.setText(mSummary);
@@ -301,7 +335,7 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         summary.setMovementMethod(new ScrollingMovementMethod());
     }
 
-    private void closeWithWarning(){
+    private void closeWithWarning() {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
         alertDialog.setTitle(getResources().getString(R.string.craft_policy_close_title));
         alertDialog.setMessage(getResources().getString(R.string.craft_policy_close_warning));
@@ -309,10 +343,10 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
                         dismiss();
-                        ((MainActivity)getActivity()).getRecyclerView().getLayoutManager().onRestoreInstanceState(MainActivity.recyclerViewState);
+                        ((MainActivity) getActivity()).getRecyclerView().getLayoutManager().onRestoreInstanceState(MainActivity.recyclerViewState);
                     }
                 });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.craft_policy_close_cancel),
@@ -325,7 +359,7 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         alertDialog.show();
     }
 
-    private void confirmPublish(){
+    private void confirmPublish() {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
         alertDialog.setTitle(getResources().getString(R.string.craft_policy_publish_title));
         alertDialog.setMessage(getResources().getString(R.string.craft_policy_publish_message));
@@ -347,11 +381,11 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         alertDialog.show();
     }
 
-    private void addToDatabase(){
+    private void addToDatabase() {
         String pushId = mDatabaseReference.push().getKey();
 
         Policy policy = new Policy(mUsername, 0, mParty,
-                mSubjects, mTitle, mSummary, String.valueOf(System.currentTimeMillis()),pushId);
+                mSubjects, mTitle, mSummary, String.valueOf(System.currentTimeMillis()), pushId);
 
         mDatabaseReference.child(pushId).setValue(policy);
 
@@ -363,8 +397,8 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         mDatabaseReference.push().setValue(pushId);
 
         mDatabaseReference = mFirebaseDatabase.getReference("Subjects");
-        for (String subject : mSubjects){
-            subject = subject.replace("/","");
+        for (String subject : mSubjects) {
+            subject = subject.replace("/", "");
             mDatabaseReference.child(subject).child("byPolicy").child(pushId).setValue(pushId);
         }
         MainActivity.mUserCreated.add(pushId);
@@ -379,8 +413,8 @@ public class CreatePolicyFragment extends DialogFragment implements CreateSubjec
         logParams.putString("User", MainActivity.USERNAME);
         FirebaseAnalytics.getInstance(getActivity()).logEvent("policyCreated", logParams);
 
-        if (MainActivity.mAdapterNeeded == 3){
-            new FirebaseRetrievalCalls((MainActivity)getActivity(), false).getTopPolicies();
+        if (MainActivity.mAdapterNeeded == 3) {
+            new FirebaseRetrievalCalls((MainActivity) getActivity(), false).getTopPolicies();
         } else {
             new FirebaseRetrievalCalls((MainActivity) getActivity(), false).getNewPolicies();
         }

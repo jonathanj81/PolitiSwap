@@ -3,6 +3,7 @@ package com.example.jon.politiswap.DialogFragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -10,7 +11,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +68,13 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
     private int mBrowseType;
+    private ArrayList<Policy> mRetainablePolicyList = new ArrayList<>();
+    private static final String RETAINED_POLICIES = "retained_policies";
+    private static final String PARTY_ON_TOP = "party_on_top";
+    private int mCurrentScreenPosition = 0;
+    private static final String CURRENT_SCREEN_POSITION = "current_screen_position";
+    private static final String SELECTABLE_POLICIES_RETAINED = "selectable_policies";
+    private static final String TARGET_PARTY_RETAINED = "target_party";
 
     public CreateSwapFragment() {
 
@@ -81,8 +88,56 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (MainActivity)context;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mPolicyAdapter = new PolicyAdapter(1, this);
+
+        mPolicyChoicesRecycler = mRootView.findViewById(R.id.create_swap_choices_recycler);
+        mPolicyChoicesRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        mPolicyChoicesRecycler.setHasFixedSize(true);
+        mPolicyChoicesRecycler.setAdapter(mPolicyAdapter);
+
+        if (savedInstanceState != null){
+            List<Policy> receivedPolicies = savedInstanceState.getParcelableArrayList(RETAINED_POLICIES);
+            int tempScreenPosition = savedInstanceState.getInt(CURRENT_SCREEN_POSITION);
+            mPartyOnTop = savedInstanceState.getString(PARTY_ON_TOP);
+
+            if (receivedPolicies != null && receivedPolicies.size() > 0) {
+                for (Policy policy : receivedPolicies) {
+                    if (policy.getParty().equals(mPartyOnTop)) {
+                        refreshPolicyViews(policy);
+                    }
+                }
+                for (Policy policy : receivedPolicies) {
+                    if (!policy.getParty().equals(mPartyOnTop)) {
+                        refreshPolicyViews(policy);
+                    }
+                }
+            }
+            if (tempScreenPosition == 3){
+                List<Policy> tempPolicies = savedInstanceState.getParcelableArrayList(SELECTABLE_POLICIES_RETAINED);
+                mRootView.findViewById(R.id.create_swap_choices_layout).setVisibility(View.VISIBLE);
+                mRootView.findViewById(R.id.create_swap_progress_layout).setVisibility(View.GONE);
+                mPolicyAdapter.setPolicies(tempPolicies, false);
+            } else if (tempScreenPosition == 2){
+                prepAvailableRecycler();
+                mRootView.findViewById(R.id.create_swap_subject_choices_layout).setVisibility(View.VISIBLE);
+                mRootView.findViewById(R.id.craft_subject_recycler_and_placeholder_frame).setVisibility(View.GONE);
+                mRootView.findViewById(R.id.craft_policy_step_number_1).setVisibility(View.GONE);
+                mRootView.findViewById(R.id.create_swap_progress_layout).setVisibility(View.GONE);
+                ((TextView)mRootView.findViewById(R.id.craft_subject_title_text_view))
+                        .setText(getResources().getString(R.string.search_alt_subject_hint));
+            } else if (tempScreenPosition == 1){
+                mTargetParty = savedInstanceState.getString(TARGET_PARTY_RETAINED);
+                getBrowsingChoice();
+            }
+        }
     }
 
     @Nullable
@@ -100,13 +155,6 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
         mRootView.findViewById(R.id.swap_first_included_layout).findViewById(R.id.swap_first_created_icon).setVisibility(View.INVISIBLE);
         mRootView.findViewById(R.id.swap_second_included_layout).findViewById(R.id.swap_first_voted_icon).setVisibility(View.INVISIBLE);
         mRootView.findViewById(R.id.swap_second_included_layout).findViewById(R.id.swap_first_created_icon).setVisibility(View.INVISIBLE);
-
-        mPolicyAdapter = new PolicyAdapter(1, this);
-
-        mPolicyChoicesRecycler = mRootView.findViewById(R.id.create_swap_choices_recycler);
-        mPolicyChoicesRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        mPolicyChoicesRecycler.setHasFixedSize(true);
-        mPolicyChoicesRecycler.setAdapter(mPolicyAdapter);
 
         mDemButton = mRootView.findViewById(R.id.create_swap_dem_button);
         mRepButton = mRootView.findViewById(R.id.create_swap_rep_button);
@@ -130,6 +178,14 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(RETAINED_POLICIES, mRetainablePolicyList);
+        outState.putString(PARTY_ON_TOP, mPartyOnTop);
+        outState.putInt(CURRENT_SCREEN_POSITION, mCurrentScreenPosition);
+        if (mCurrentScreenPosition == 3){
+            outState.putParcelableArrayList(SELECTABLE_POLICIES_RETAINED, new ArrayList<Parcelable>(mPolicyAdapter.getPolicies()));
+        } else if (mCurrentScreenPosition == 1){
+            outState.putString(TARGET_PARTY_RETAINED, mTargetParty);
+        }
     }
 
     @Override
@@ -209,6 +265,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
         mRootView.findViewById(R.id.create_swap_browse_top_button).setOnClickListener(this);
         ((Button) mRootView.findViewById(R.id.craft_swap_choices_back))
                 .setText(getResources().getString(R.string.craft_policy_small_back));
+        mCurrentScreenPosition = 1;
     }
 
     private void getSelectionRecycler() {
@@ -223,6 +280,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
                 mRootView.findViewById(R.id.craft_policy_step_number_1).setVisibility(View.GONE);
                 ((TextView)mRootView.findViewById(R.id.craft_subject_title_text_view))
                         .setText(getResources().getString(R.string.search_alt_subject_hint));
+                mCurrentScreenPosition = 2;
                 break;
             case 1:
                 new FirebaseRetrievalCalls(this, false).getNewPolicies();
@@ -250,6 +308,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
             mRootView.findViewById(R.id.create_swap_no_policies_found_text).setVisibility(View.GONE);
         }
         mPolicyAdapter.setPolicies(tempPolicies, fromScroll);
+        mCurrentScreenPosition = 3;
     }
 
     @Override
@@ -279,6 +338,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
                 .setText(getResources().getString(R.string.craft_policy_close_cancel));
         mHeaderView.setText(getResources().getString(R.string.craft_swap_header));
         mHeaderView.setTextColor(getResources().getColor(R.color.darkGray));
+        mCurrentScreenPosition = 0;
     }
 
     private void closingDialog() {
@@ -307,6 +367,7 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
 
     public void refreshPolicyViews(Policy policy) {
         resetScreens();
+        addOrReplaceRetainable(policy);
         String party = policy.getParty();
         String subjects = policy.getSubjects().toString();
 
@@ -334,6 +395,9 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
             ((TextView) mLayoutDem.findViewById(R.id.swap_first_subject_line)).setText(subjects.substring(1, subjects.length() - 1));
             ((TextView) mLayoutDem.findViewById(R.id.swap_first_title_line)).setText(policy.getTitle());
             ((TextView) mLayoutDem.findViewById(R.id.swap_first_summary_line)).setText(policy.getSummary());
+            if (MainActivity.isLand) {
+                ((TextView) mLayoutDem.findViewById(R.id.swap_first_summary_line)).setMaxLines(1);
+            }
             ((TextView) mLayoutDem.findViewById(R.id.swap_first_thumbs_up_count))
                     .setText(String.format(getResources().getString(R.string.policy_net_wanted),
                             policy.getNetWanted(), party));
@@ -345,6 +409,9 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
             ((TextView) mLayoutRep.findViewById(R.id.swap_first_subject_line)).setText(subjects.substring(1, subjects.length() - 1));
             ((TextView) mLayoutRep.findViewById(R.id.swap_first_title_line)).setText(policy.getTitle());
             ((TextView) mLayoutRep.findViewById(R.id.swap_first_summary_line)).setText(policy.getSummary());
+            if (MainActivity.isLand) {
+                ((TextView) mLayoutRep.findViewById(R.id.swap_first_summary_line)).setMaxLines(1);
+            }
             ((TextView) mLayoutRep.findViewById(R.id.swap_first_thumbs_up_count))
                     .setText(String.format(getResources().getString(R.string.policy_net_wanted),
                             policy.getNetWanted(), party));
@@ -495,5 +562,15 @@ public class CreateSwapFragment extends DialogFragment implements View.OnClickLi
                 new FirebaseRetrievalCalls(this, true).getTopPolicies();
                 break;
         }
+    }
+
+    private void addOrReplaceRetainable(Policy policy){
+        for (Policy savedPolicy : mRetainablePolicyList){
+            if (savedPolicy.getParty().equals(policy.getParty())){
+                mRetainablePolicyList.remove(savedPolicy);
+                break;
+            }
+        }
+        mRetainablePolicyList.add(policy);
     }
 }

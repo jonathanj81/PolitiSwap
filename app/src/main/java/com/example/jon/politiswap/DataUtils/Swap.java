@@ -2,7 +2,9 @@ package com.example.jon.politiswap.DataUtils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
+@Keep
 public class Swap implements Parcelable {
 
     private String creator;

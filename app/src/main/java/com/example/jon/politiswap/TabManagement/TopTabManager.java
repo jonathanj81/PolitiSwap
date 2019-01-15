@@ -29,6 +29,7 @@ public class TopTabManager implements TabLayout.OnTabSelectedListener {
                 .setText(mActivity.getResources().getString(R.string.tab_legislation));
 
         topTab.getTabAt(startAt).select();
+        mTabType = startAt;
 
         topTab.getTabAt(startAt).getCustomView().findViewById(R.id.tab_item_text_view)
                 .setBackground(mActivity.getResources().getDrawable(R.drawable.tab_item_background_selected));
