@@ -75,11 +75,11 @@
                 android:layout_height="?android:actionBarSize"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="?android:actionBarSize"
-                android:background="@color/colorPrimary"
+                android:background="@color/colorPrimaryOpaque"
                 app:layout_collapseMode="parallax"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-                app:tabMaxWidth="0dp"
                 app:tabGravity="fill"
+                app:tabMaxWidth="0dp"
                 app:tabMode="fixed"
                 app:tabPaddingEnd="0dp"
                 app:tabPaddingStart="0dp">
@@ -132,10 +132,10 @@
         android:id="@+id/alt_search_legislation_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="42dp"
         android:background="@android:color/white"
         android:fillViewport="true"
         android:visibility="gone"
-        android:layout_marginBottom="42dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -151,10 +151,10 @@
         android:id="@+id/alt_search_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="42dp"
         android:background="@android:color/white"
         android:fillViewport="true"
         android:visibility="gone"
-        android:layout_marginBottom="42dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -170,9 +170,9 @@
         android:id="@+id/alt_no_network_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="42dp"
         android:background="@android:color/white"
         android:visibility="gone"
-        android:layout_marginBottom="42dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -188,10 +188,10 @@
         android:id="@+id/alt_score_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="42dp"
         android:background="@android:color/white"
         android:fillViewport="true"
         android:visibility="gone"
-        android:layout_marginBottom="42dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -217,8 +217,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_marginBottom="50dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="50dp"
         android:background="@color/raised_button_darker_red"
         android:src="@drawable/ic_add_24dp" />
 
@@ -227,18 +227,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"
         android:background="@android:color/white"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="50dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption" />
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
+    <FrameLayout
+        android:id="@+id/ad_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_gravity="bottom|center_horizontal"
-        android:background="@color/colorPrimaryDarkFull"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/test_ad_id" />
+        android:background="@color/colorPrimaryDarkFull">
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/test_ad_id" />
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

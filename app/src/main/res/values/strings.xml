@@ -5,8 +5,8 @@
     <string name="action_faq">FAQ</string>
     <string name="action_signout">Sign out</string>
 
-    <string name="test_ad_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="test_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="test_ad_id" translatable="false">ca-app-pub-2592878146760147/8912356003</string>
+    <string name="test_app_id" translatable="false">ca-app-pub-2592878146760147~2476662363</string>
 
     <string name="widget_policy_header">New Policies today!</string>
     <string name="widget_swap_header">New Swaps today!</string>
@@ -167,4 +167,8 @@
     <string name="widget_score_policy_creation">Policies: %1$s</string>
     <string name="widget_score_votes">Votes: %1$s</string>
     <string name="widget_no_account_message">Please create an account to get widget updates.</string>
+
+    <string name="legislation_error_message">Something went wrong. Try Again?</string>
+    <string name="swaps_error_message">No Swaps found. Try Again?</string>
+    <string name="policies_error_message">No Policies found. Try Again?</string>
 </resources>

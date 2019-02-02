@@ -17,11 +17,11 @@ android {
     }
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.jon.politiswap"
+        applicationId "com.politiswap.politiswap"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

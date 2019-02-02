@@ -23,6 +23,30 @@
           }
         },
         {
+          "client_id": "336539012458-71udid7206chbdajodvfvel6lbo3vdvr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jon.politiswap",
+            "certificate_hash": "061b83457be484434bc864b43ed513e699e66b0f"
+          }
+        },
+        {
+          "client_id": "336539012458-hflaqhn8878c58ua6svgsevropsth2gv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jon.politiswap",
+            "certificate_hash": "3e0cdb99560094979612cd63a2699d0d17c6cdbb"
+          }
+        },
+        {
+          "client_id": "336539012458-p2ghtoobd18srifjlt6mds3qq9g9q8cd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jon.politiswap",
+            "certificate_hash": "71f67296a7d13be3fc0336fe91f34672276bcfae"
+          }
+        },
+        {
           "client_id": "336539012458-uajj6s23jvjq2s2tegjhdmplus7igl9k.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -49,6 +73,51 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336539012458:android:5afbeb455fda4f50",
+        "android_client_info": {
+          "package_name": "com.politiswap.politiswap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336539012458-41d0g7k255m0fnpdt899ubap11na52uo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.politiswap.politiswap",
+            "certificate_hash": "33e003866f4106768843e202bda018b35159889a"
+          }
+        },
+        {
+          "client_id": "336539012458-uajj6s23jvjq2s2tegjhdmplus7igl9k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMpTqzbPwe-pg4DnldIseY7ftTUeiAU0c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336539012458-uajj6s23jvjq2s2tegjhdmplus7igl9k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-2592878146760147~2476662363"
     }
   ],
   "configuration_version": "1"

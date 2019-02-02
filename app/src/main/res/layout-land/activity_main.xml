@@ -82,7 +82,7 @@
                     android:layout_height="?android:actionBarSize"
                     android:layout_gravity="bottom"
                     android:layout_marginBottom="?android:actionBarSize"
-                    android:background="@color/colorPrimary"
+                    android:background="@color/colorPrimaryOpaque"
                     app:layout_collapseMode="parallax"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                     app:tabGravity="fill"
@@ -173,14 +173,21 @@
             android:gravity="center_horizontal"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption" />
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
+        <FrameLayout
+            android:id="@+id/ad_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/colorPrimaryDarkFull"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/test_ad_id" />
+            android:background="@color/colorPrimaryDarkFull">
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/test_ad_id" />
+        </FrameLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 
