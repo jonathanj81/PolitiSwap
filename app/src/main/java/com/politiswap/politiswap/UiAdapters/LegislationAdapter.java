@@ -1,10 +1,10 @@
 package com.politiswap.politiswap.UiAdapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +102,7 @@ public class LegislationAdapter extends RecyclerView.Adapter<LegislationAdapter.
 
         holder.partyText.setText(String.format(mContext.getResources().getString(R.string.sponsored_by), party));
         if (partyAbbreviated.equals("R")){
-            holder.backgroundLayout.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccentTransparency));
+            //holder.backgroundLayout.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccentTransparency));
         } else {
             holder.backgroundLayout.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
         }

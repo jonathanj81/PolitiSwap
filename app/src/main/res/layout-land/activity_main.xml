@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="0dp"
@@ -14,14 +14,14 @@
         android:layout_weight="1"
         android:fitsSystemWindows="true">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="276dp"
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -46,7 +46,7 @@
                     android:background="@drawable/scrim_gradient"
                     android:fitsSystemWindows="true" />
 
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?android:actionBarSize"
@@ -76,7 +76,7 @@
                     android:textStyle="italic"
                     app:layout_collapseMode="pin" />
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/top_tab_layout"
                     android:layout_width="match_parent"
                     android:layout_height="?android:actionBarSize"
@@ -91,30 +91,30 @@
                     app:tabPaddingEnd="0dp"
                     app:tabPaddingStart="0dp">
 
-                    <android.support.design.widget.TabItem
+                    <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout="@layout/tab_item_layout"
                         android:minWidth="120dp" />
 
-                    <android.support.design.widget.TabItem
+                    <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout="@layout/tab_item_layout"
                         android:minWidth="120dp" />
 
-                    <android.support.design.widget.TabItem
+                    <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout="@layout/tab_item_layout"
                         android:minWidth="120dp" />
 
-                    <android.support.design.widget.TabItem
+                    <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout="@layout/tab_item_layout"
                         android:minWidth="120dp" />
-                </android.support.design.widget.TabLayout>
+                </com.google.android.material.tabs.TabLayout>
 
                 <include
                     android:id="@+id/included_three_tab_layout"
@@ -124,10 +124,10 @@
                     android:id="@+id/included_two_tab_layout"
                     layout="@layout/two_tab_layout"
                     android:visibility="gone" />
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/alt_no_network_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -143,9 +143,9 @@
                 android:layout_height="match_parent"
                 android:layout_margin="16dp" />
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/alt_score_mini_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -161,7 +161,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="8dp" />
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <TextView
             android:id="@+id/user_id_view"
@@ -189,7 +189,7 @@
                 ads:adUnitId="@string/test_ad_id" />
         </FrameLayout>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <FrameLayout
         android:id="@+id/landscape_recycler_container"
@@ -199,14 +199,14 @@
         android:background="@color/light_gray"
         android:paddingTop="20dp">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/content_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/alt_search_legislation_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -222,9 +222,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp" />
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/alt_search_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -240,9 +240,9 @@
                 android:layout_height="match_parent"
                 android:layout_margin="16dp" />
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/alt_score_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -258,9 +258,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="16dp" />
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-        <android.support.v4.widget.ContentLoadingProgressBar
+        <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/refreshing_bills_progress_bar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
@@ -269,7 +269,7 @@
             android:layout_marginBottom="128dp"
             android:visibility="gone" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

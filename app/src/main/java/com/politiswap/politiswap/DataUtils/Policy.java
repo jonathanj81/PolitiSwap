@@ -2,7 +2,7 @@ package com.politiswap.politiswap.DataUtils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

@@ -7,4 +7,9 @@
         android:title="@string/action_signout"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_privacy"
+        android:title="@string/action_privacy"
+        app:showAsAction="never"/>
+
 </menu>

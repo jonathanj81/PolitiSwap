@@ -1,10 +1,10 @@
 package com.politiswap.politiswap.TabManagement;
 
 import android.content.Context;
-import android.support.design.widget.TabLayout;
-import android.support.v4.widget.ContentLoadingProgressBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.widget.ContentLoadingProgressBar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;

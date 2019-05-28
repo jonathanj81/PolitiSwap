@@ -1,6 +1,6 @@
 package com.politiswap.politiswap.DataUtils;
 
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 @Keep
 public class UserInfo {

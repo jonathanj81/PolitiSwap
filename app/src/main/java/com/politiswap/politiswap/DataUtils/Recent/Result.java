@@ -1,7 +1,7 @@
 
 package com.politiswap.politiswap.DataUtils.Recent;
 
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

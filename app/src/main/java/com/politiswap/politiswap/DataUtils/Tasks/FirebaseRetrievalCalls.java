@@ -1,7 +1,6 @@
 package com.politiswap.politiswap.DataUtils.Tasks;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import com.politiswap.politiswap.DataUtils.Policy;
 import com.politiswap.politiswap.DataUtils.Swap;

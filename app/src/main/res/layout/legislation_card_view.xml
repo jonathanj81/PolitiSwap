@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/recent_legislation_card_view"
     android:layout_width="match_parent"
@@ -12,7 +12,7 @@
     card_view:cardCornerRadius="4dp"
     card_view:cardUseCompatPadding="true">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/recent_legislation_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -112,7 +112,7 @@
             card_view:layout_constraintTop_toBottomOf="@id/recent_bill_detail_inner_layout"
             card_view:layout_constraintVertical_chainStyle="spread"
             card_view:layout_constraintVertical_weight="1" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
         android:id="@+id/legislation_layout_refresh_button"
@@ -123,4 +123,4 @@
         android:layout_gravity="top|end"
         android:visibility="gone"/>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

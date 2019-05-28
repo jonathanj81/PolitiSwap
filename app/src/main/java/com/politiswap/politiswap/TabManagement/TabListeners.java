@@ -1,8 +1,8 @@
 package com.politiswap.politiswap.TabManagement;
 
 import android.content.Context;
-import android.support.design.widget.TabLayout;
-import android.support.v4.widget.ContentLoadingProgressBar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.widget.ContentLoadingProgressBar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.TabLayout
+<com.google.android.material.tabs.TabLayout
     android:id="@+id/three_tab_layout"
     android:layout_width="match_parent"
     android:layout_height="?android:actionBarSize"
@@ -13,19 +13,19 @@
     app:tabPaddingEnd="0dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.design.widget.TabItem
+    <com.google.android.material.tabs.TabItem
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout="@layout/tab_item_layout"
         android:minWidth="120dp" />
-    <android.support.design.widget.TabItem
+    <com.google.android.material.tabs.TabItem
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout="@layout/tab_item_layout"
         android:minWidth="120dp" />
-    <android.support.design.widget.TabItem
+    <com.google.android.material.tabs.TabItem
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout="@layout/tab_item_layout"
         android:minWidth="120dp" />
-</android.support.design.widget.TabLayout>
+</com.google.android.material.tabs.TabLayout>

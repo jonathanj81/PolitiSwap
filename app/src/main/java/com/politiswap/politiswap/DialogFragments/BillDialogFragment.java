@@ -3,9 +3,9 @@ package com.politiswap.politiswap.DialogFragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +54,8 @@ public class BillDialogFragment extends DialogFragment {
                         FragmentArgs.BILL_DIALOG_SPONSOR_NAME + " (" + FragmentArgs.BILL_DIALOG_SPONSOR_PARTY + ")"));
 
         if (FragmentArgs.BILL_DIALOG_SPONSOR_PARTY.equals("Republican")){
-            view.findViewById(R.id.bill_fragment_background_layout)
-                    .setBackgroundColor(getActivity().getResources().getColor(R.color.colorAccentTransparency));
+            //view.findViewById(R.id.bill_fragment_background_layout)
+                    //.setBackgroundColor(getActivity().getResources().getColor(R.color.colorAccentTransparency));
         }
 
         view.findViewById(R.id.bill_dialog_close_button).setOnClickListener(new View.OnClickListener() {

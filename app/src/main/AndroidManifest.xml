@@ -15,14 +15,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".PrivacyActivity"/>
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/test_app_id" />
 
-        <activity
-            android:name="com.politiswap.politiswap.MainActivity"
-            android:windowSoftInputMode="adjustResize">
+        <activity android:name=".NewVersion.PolicyActivity"/>
+        <activity android:name=".NewVersion.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +30,12 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.politiswap.politiswap.PolicyWidgetProvider">
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <receiver android:name=".PolicyWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

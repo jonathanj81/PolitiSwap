@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:elevation="6dp"
+    android:layout_margin="8dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
+    <ImageButton
+        android:id="@+id/nav_menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_menu_white_24dp"/>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/location_search_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/search_background"
+        android:focusable="false"
+        app:iconifiedByDefault="false"
+        app:queryHint="@string/search_policy_hint" />
+
+    <ImageButton
+        android:id="@+id/overflow_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_more_vert_black_24dp"/>
+
+</LinearLayout>
+</layout>

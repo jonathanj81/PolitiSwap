@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/winter_capitol_portrait"
+    android:fitsSystemWindows="true">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/top_options_included_layout"
+            layout="@layout/top_options_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_gravity="top"/>
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bar"
+            style="@style/Widget.MaterialComponents.BottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="50dp"
+            android:backgroundTint="@color/colorBackgroundGray"
+            android:elevation="8dp"
+            android:gravity="center"
+            android:paddingEnd="8dp"
+            app:fabAlignmentMode="center"
+            app:fabCradleMargin="0dp"
+            app:fabCradleRoundedCornerRadius="0dp"
+            app:fabCradleVerticalOffset="0dp"
+            app:hideOnScroll="true"
+            app:layout_anchorGravity="start">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:weightSum="5">
+
+                <LinearLayout
+                    android:id="@+id/bar_top_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="false"
+                        android:layout_weight="2"
+                        android:duplicateParentState="true"
+                        app:srcCompat="@drawable/ic_format_list_numbered_black_24dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="2dp"
+                        android:clickable="false"
+                        android:duplicateParentState="true"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:gravity="center"
+                        android:text="Top"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bar_new_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="false"
+                        android:layout_weight="2"
+                        android:duplicateParentState="true"
+                        app:srcCompat="@drawable/ic_new_releases_black_24dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="2dp"
+                        android:clickable="false"
+                        android:duplicateParentState="true"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:gravity="center"
+                        android:text="New"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bar_create_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp"
+                        android:background="@android:color/transparent" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:gravity="center"
+                        android:paddingEnd="2dp"
+                        android:text="Create"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bar_acted_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="false"
+                        android:layout_weight="2"
+                        android:duplicateParentState="true"
+                        app:srcCompat="@drawable/ic_bookmark_black_24dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="2dp"
+                        android:clickable="false"
+                        android:duplicateParentState="true"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:gravity="center"
+                        android:text="Mine"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bar_settings_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="false"
+                        android:layout_weight="2"
+                        android:duplicateParentState="true"
+                        app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="2dp"
+                        android:clickable="false"
+                        android:layout_weight="1"
+                        android:duplicateParentState="true"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:gravity="center"
+                        android:text="Others"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:src="@drawable/fab_background"
+            app:backgroundTint="@color/colorBackgroundGray"
+            app:elevation="2dp"
+            app:fabCustomSize="64dp"
+            app:layout_anchor="@id/bar" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/colorPrimaryDark"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/test_ad_id" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/colorBackgroundGray"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_layout"
+        app:itemTextAppearance="@style/TextAppearance.AppCompat.Subhead"
+        app:menu="@menu/drawer_view" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
+</layout>

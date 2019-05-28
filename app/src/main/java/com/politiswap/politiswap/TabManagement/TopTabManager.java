@@ -1,6 +1,6 @@
 package com.politiswap.politiswap.TabManagement;
 
-import android.support.design.widget.TabLayout;
+import com.google.android.material.tabs.TabLayout;
 import android.view.View;
 import android.widget.TextView;
 import com.politiswap.politiswap.MainActivity;
