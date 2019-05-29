@@ -59,7 +59,7 @@
         <item name="android:layout_marginBottom">24dp</item>
         <item name="android:layout_marginStart">48dp</item>
         <item name="android:layout_marginEnd">48dp</item>
-        <item name="android:background">@drawable/launch_button_background</item>
+        <item name="android:background">@drawable/launch_button_selector</item>
         <item name="android:textColor">#fafafa</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Headline</item>
         <item name="android:textStyle">bold</item>
