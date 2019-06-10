@@ -10,6 +10,7 @@
     <color name="colorBackgroundGray">#FAFAFA</color>
 
     <color name="book_page_color">#fffef3</color>
+    <color name="book_page_color_opacity">#d9fffef3</color>
     <color name="light_gray">#E0E0E0</color>
     <color name="lighter_gray">#EEEEEE</color>
     <color name="transparencyBackgroundGray">#B3E0E0E0</color>
