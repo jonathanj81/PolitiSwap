@@ -1,4 +1,4 @@
-package com.politiswap.politiswap;
+package com.politiswap.politiswap.NewVersion;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -11,6 +11,8 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import com.politiswap.politiswap.R;
 
 public class PrivacyActivity extends AppCompatActivity implements View.OnClickListener {
 

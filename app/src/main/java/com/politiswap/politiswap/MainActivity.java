@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.politiswap.politiswap.DataUtils.Recent.Bill;
+import com.politiswap.politiswap.NewVersion.PrivacyActivity;
 import com.politiswap.politiswap.UiAdapters.OnBottomReachedListener;
 import com.politiswap.politiswap.DataUtils.Policy;
 import com.politiswap.politiswap.DataUtils.Recent.RecentBills;

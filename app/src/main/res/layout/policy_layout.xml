@@ -1,121 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    android:orientation="vertical">
+<layout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="3"
-        android:background="@android:color/transparent">
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/policy_rating_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/policy_card_background_headers"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/policy_rating_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/policy_section_background_headers"
-                android:padding="4dp"
-                android:text="76"
-                android:textColor="@android:color/black"
-                android:textSize="28sp"
-                android:textStyle="bold" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/policy_creator_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:paddingStart="4dp"
-            android:paddingTop="4dp"
-            android:paddingEnd="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@id/policy_content_container"
-            app:layout_constraintRight_toRightOf="parent">
-
-            <TextView
-                android:id="@+id/policy_creator_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="end"
-                android:padding="4dp"
-                android:text="Created by: J. Johnson\n05/14/18"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textColor="@android:color/black" />
-        </FrameLayout>
-
-        <View
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#80FF0000"
-            app:layout_constraintBottom_toTopOf="@id/policy_content_container"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <FrameLayout
-            android:id="@+id/policy_content_container"
-            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/policy_card_background_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/policy_rating_container">
+            android:layout_marginBottom="8dp"
+            android:layout_weight="3"
+            android:background="@android:color/transparent">
 
             <LinearLayout
-                android:id="@+id/policy_content_text_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/policy_section_background_content"
+                android:id="@+id/policy_rating_container"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/policy_section_background_headers"
+                android:orientation="vertical"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/policy_rating_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:text="76"
+                    android:textColor="@android:color/black"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/policy_rating_title_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:text="@string/policy_rating_hint" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/policy_creator_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:background="@android:color/transparent"
                 android:orientation="vertical"
                 android:paddingStart="4dp"
-                android:paddingTop="8dp"
+                android:paddingTop="4dp"
                 android:paddingEnd="4dp"
-                android:paddingBottom="4dp">
+                app:layout_constraintBottom_toTopOf="@id/policy_content_container"
+                app:layout_constraintRight_toRightOf="parent">
 
                 <TextView
-                    android:id="@+id/policy_content_text_title"
+                    android:id="@+id/policy_creator_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:background="@android:color/transparent"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center_horizontal"
-                    android:text="This Is A Policy Title"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:gravity="end"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="2dp"
+                    android:text="Created by: J. Johnson"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     android:textColor="@android:color/black" />
+
                 <TextView
-                    android:id="@+id/policy_content_text_description"
+                    android:id="@+id/policy_creator_timestamp_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:background="@android:color/transparent"
-                    android:text="This is a bunch of text describing what this policy aims to do and how it will work."
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:gravity="end"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="4dp"
+                    android:text="5/14/19"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     android:textColor="@android:color/black" />
             </LinearLayout>
-        </FrameLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/policy_comment_background" />
+            <View
+                android:id="@+id/policy_content_separator_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorFullRedOpacity"
+                app:layout_constraintBottom_toTopOf="@id/policy_content_container"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
 
-</LinearLayout>
+            <FrameLayout
+                android:id="@+id/policy_content_container"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/policy_card_background_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/policy_rating_container">
+
+                <LinearLayout
+                    android:id="@+id/policy_content_text_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/policy_section_background_content"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="24dp">
+
+                    <TextView
+                        android:id="@+id/policy_content_text_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@android:color/transparent"
+                        android:gravity="center_horizontal"
+                        android:text="This Is A Policy Title"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                        android:textColor="@android:color/black" />
+
+                    <ScrollView
+                        android:id="@+id/policy_content_description_scroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@android:color/transparent">
+
+                        <TextView
+                            android:id="@+id/policy_content_text_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:text="This is a bunch of text describing what this policy aims to do and how it will work."
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:textColor="@android:color/black" />
+                    </ScrollView>
+                </LinearLayout>
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/policy_vote_button"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:background="@drawable/small_button_background"
+                android:elevation="6dp"
+                android:text="@string/policy_vote_button"
+                android:textColor="@color/colorBackgroundGray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/policy_comment_background" />
+
+    </LinearLayout>
+</layout>

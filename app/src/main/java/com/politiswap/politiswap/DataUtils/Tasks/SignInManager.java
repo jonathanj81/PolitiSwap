@@ -6,7 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.politiswap.politiswap.DataUtils.UserInfo;
+import com.politiswap.politiswap.NewVersion.UserInfo;
 import com.politiswap.politiswap.MainActivity;
 import com.politiswap.politiswap.R;
 import com.firebase.ui.auth.AuthUI;

@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#7ba6e7</color>
     <color name="colorPrimaryDark">#3667a6</color>
-    <color name="colorAccent">#FFE6D9</color>
+    <color name="colorAccent">#FF9D9D</color>
     <color name="colorAccentFull">#FF9D9D</color>
 
     <color name="colorPrimaryDarkOpacity">#E63667a6</color>
@@ -19,6 +19,9 @@
     <color name="colorPrimaryFull">#B4BEE5</color>
     <color name="colorPrimaryOpaque">#805D6BAE</color>
     <color name="colorPrimaryDarkFull">#031EA3</color>
+
+    <color name="colorFullBlueOpacity">#800000FF</color>
+    <color name="colorFullRedOpacity">#80FF0000</color>
 
     <color name="raised_button_darker_blue">#3F5094</color>
     <color name="raised_button_lighter_blue">#E1E5F7</color>

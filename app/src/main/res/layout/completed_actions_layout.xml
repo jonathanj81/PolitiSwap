@@ -5,23 +5,86 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/completed_action_created"
+    <LinearLayout
+        android:id="@+id/completed_created_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_memo_gray"/>
-    <ImageView
-        android:id="@+id/completed_action_voted"
+        android:orientation="horizontal"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="12dp"
+        android:layout_gravity="end"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/completed_created_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/completed_created"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:background="@android:color/transparent"
+            android:layout_marginEnd="4dp"/>
+
+        <ImageView
+            android:id="@+id/completed_created_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check_gray"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/completed_voted_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_check_green"/>
-    <ImageView
-        android:id="@+id/completed_action_commented"
+        android:orientation="horizontal"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="12dp"
+        android:layout_gravity="end"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/completed_voted_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/completed_voted"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:background="@android:color/transparent"
+            android:layout_marginEnd="4dp"/>
+
+        <ImageView
+            android:id="@+id/completed_voted_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check_gray"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/completed_commented_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_mode_comment_gray"/>
+        android:orientation="horizontal"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="12dp"
+        android:layout_gravity="end"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/completed_commented_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/completed_commmented"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:background="@android:color/transparent"
+            android:layout_marginEnd="4dp"/>
+
+        <ImageView
+            android:id="@+id/completed_commented_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check_gray"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -84,10 +84,10 @@
 
     <string name="verify_email_title">Verify Email</string>
     <string name="verify_email_message">Please request a verification email and/or check your account for it.  Until verified, you will be able to read but not create content.</string>
-    <string name="verify_email_yes">Send me the email</string>
+    <string name="verify_email_yes">Send email, login again</string>
     <string name="verify_email_neutral">Let me check (back to login)</string>
-    <string name="verify_email_no">Stay here</string>
-    <string name="verify_email_sent">Email sent successfully</string>
+    <string name="verify_email_no">Stay here as guest</string>
+    <string name="verify_email_sent">Email sent successfully; check your inbox</string>
     <string name="verify_email_send_fail">Verification email failed</string>
 
     <string name="party_choice_dialog_title">Choose a Party</string>
@@ -184,4 +184,15 @@
     <string name="test_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
 
     <string name="search_policy_hint">Search policies</string>
+
+    <string name="completed_created">created</string>
+    <string name="completed_voted">voted</string>
+    <string name="completed_commmented">commented</string>
+
+    <string name="policy_rating_hint">Score</string>
+    <string name="policy_creator_string">Created by: %1$s</string>
+    <string name="policy_vote_button">Vote</string>
+    <string name="policy_content_subjects">Subjects: %1$s</string>
+
+
 </resources>

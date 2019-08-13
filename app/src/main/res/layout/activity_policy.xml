@@ -10,28 +10,26 @@
     android:fitsSystemWindows="true">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/activity_policy_coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/included_temp_layout"
-            layout="@layout/policy_layout"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/policy_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="72dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="82dp"
             android:layout_marginBottom="164dp"
             android:layout_gravity="center"/>
 
-        <include
+        <!--<include
             android:id="@+id/included_completed_actions_layout"
             layout="@layout/completed_actions_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|start"
-            android:layout_marginTop="104dp"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginTop="120dp"
+            android:layout_marginStart="8dp"/>-->
 
         <include
             android:id="@+id/top_options_included_layout"

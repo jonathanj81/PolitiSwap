@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.politiswap.politiswap.DataUtils.Swap;
 import com.politiswap.politiswap.DataUtils.Tasks.FirebaseRetrievalCalls;
-import com.politiswap.politiswap.DataUtils.UserInfo;
+import com.politiswap.politiswap.NewVersion.UserInfo;
 import com.politiswap.politiswap.MainActivity;
 import com.politiswap.politiswap.R;
 import com.google.firebase.database.DataSnapshot;
